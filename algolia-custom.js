@@ -49,7 +49,7 @@ ${item.hits
     let h1 = "";
     let h2 = "";
     let h3 = "";
-    console.log("render-hits-", hit);
+    //  console.log("render-hits-", hit);
     h1 = instantsearch.highlight({
       attribute: "h1",
       hit: hit,
@@ -92,11 +92,11 @@ ${item.hits
       heading += ` ${seperator} ` + h3;
     }
     const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
-    console.log("search-", {
+   /* console.log("search-", {
       location: window.location,
       objectID: hit.objectID,
       SEARCH_LINK,
-    });
+    }); */
     return `
         <a href="${SEARCH_LINK}" class="st-link w-inline-block is-light">
           <div class="st-name">${heading}</div>
