@@ -1,14 +1,3 @@
-    <script
-    src="https://cdn.jsdelivr.net/npm/algoliasearch@4.5.1/dist/algoliasearch-lite.umd.js"
-    integrity="sha256-EXPXz4W6pQgfYY3yTpnDa3OH8/EPn16ciVsPQ/ypsjk="
-    crossorigin="anonymous"
-  ></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.8.3/dist/instantsearch.production.min.js"
-    integrity="sha256-LAGhRRdtVoD6RLo2qDQsU2mp+XVSciKRC8XPOBWmofM="
-    crossorigin="anonymous"
-  ></script>
-  <script>
 const searchTips = document.querySelector(".search-tips");
 searchTips.style.display = "none";
 const searchClient = algoliasearch(
@@ -226,5 +215,3 @@ clearSearch.addEventListener("mousedown", function (e) {
   inputSearch.parentNode.reset();
   inputSearch.blur();
 });
-
-  </script>
