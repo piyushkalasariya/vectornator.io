@@ -1,4 +1,5 @@
 const searchTips = document.querySelector(".search-tips");
+if (searchTips) {
 searchTips.style.display = "none";
 const searchClient = algoliasearch(
   "3IX4R6F9TD",
@@ -215,3 +216,4 @@ clearSearch.addEventListener("mousedown", function (e) {
   inputSearch.parentNode.reset();
   inputSearch.blur();
 });
+}
