@@ -1,5 +1,4 @@
 const searchTips = document.querySelector(".search-tips");
-if (searchTips) {
 searchTips.style.display = "none";
 const searchClient = algoliasearch(
   "3IX4R6F9TD",
@@ -11,7 +10,10 @@ const search = instantsearch({
   searchFunction(helper) {
     if (helper.state.query === "") {
       helper.state.hitsPerPage = 5;
+      const facetFilters = [["tag:h1"]];
+      helper.state.facetFilters = facetFilters;
     } else {
+      helper.state.facetFilters = [];
       helper.state.hitsPerPage = 20;
     }
     helper.search();
@@ -49,7 +51,7 @@ ${item.hits
     let h1 = "";
     let h2 = "";
     let h3 = "";
-    //  console.log("render-hits-", hit);
+    // console.log("render-hits-", hit);
     h1 = instantsearch.highlight({
       attribute: "h1",
       hit: hit,
@@ -92,11 +94,11 @@ ${item.hits
       heading += ` ${seperator} ` + h3;
     }
     const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
-   /* console.log("search-", {
-      location: window.location,
-      objectID: hit.objectID,
-      SEARCH_LINK,
-    }); */
+    // console.log("search-", {
+    //   location: window.location,
+    //   objectID: hit.objectID,
+    //   SEARCH_LINK,
+    // });
     return `
         <a href="${SEARCH_LINK}" class="st-link w-inline-block is-light">
           <div class="st-name">${heading}</div>
@@ -194,12 +196,14 @@ $(".search-tips").mousedown(function (e) {
 });
 inputSearch.addEventListener("focusout", function () {
   if (areTipsOpen) {
+    const keyword = $("#search").val();
     hideBG();
     unblurBackground();
     hideTips();
     searchIcon.toggle();
     searchBox.css("display", "none");
     areTipsOpen = false;
+    if (keyword) window.open(`/searching?query=${keyword}`, "_self");
   }
 });
 inputSearch.addEventListener("focus", function () {
@@ -216,4 +220,3 @@ clearSearch.addEventListener("mousedown", function (e) {
   inputSearch.parentNode.reset();
   inputSearch.blur();
 });
-}
