@@ -11,7 +11,7 @@ if (!window.location.pathname.includes("/faq")) {
     searchFunction(helper) {
       if (helper.state.query === "") {
         helper.state.hitsPerPage = 5;
-        const facetFilters = [["tag:h1"]];
+        const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
         helper.state.facetFilters = facetFilters;
       } else {
         helper.state.facetFilters = [];
