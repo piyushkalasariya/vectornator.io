@@ -198,14 +198,14 @@ if (!window.location.pathname.includes("/faq")) {
   });
   inputSearch.addEventListener("focusout", function () {
     if (areTipsOpen) {
-      const keyword = $("#search").val();
+      // const keyword = $("#search").val();
       hideBG();
       unblurBackground();
       hideTips();
       searchIcon.toggle();
       searchBox.css("display", "none");
       areTipsOpen = false;
-      if (keyword) window.open(`/searching?query=${keyword}`, "_self");
+      // if (keyword) window.open(`/searching?query=${keyword}`, "_self");
     }
   });
   inputSearch.addEventListener("focus", function () {
