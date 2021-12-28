@@ -116,7 +116,7 @@ if (!isFAQ) {
       searchParameters: { attributesToSnippet: ["text:50;"] },
       searchFunction(helper) {
         query = helper.state.query;
-        console.log("search-query-", query);
+        // console.log("search-query-", query);
         if (helper.state.query === "") {
           helper.state.hitsPerPage = 5;
         } else {
@@ -291,25 +291,8 @@ if (!isFAQ) {
       resetChange = () => ("" == inputSearch.value ? hideReset() : showReset()),
       introH2 = $(".intro h2").text();
     $(".search-tips").mousedown(function (e) {
-      console.log("mouse-down-working");
       e.preventDefault();
       $(e.target.closest("a")).trigger("click");
-      // window.innerWidth <= 478 &&
-      //   $(e.target.closest("a")).click(function (e) {
-      //     e.preventDefault(),
-      //       e.stopPropagation(),
-      //       console.log("working-on-click");
-      //     (a = document.querySelector(this.getAttribute("href")).offsetTop),
-      //       window.scrollTo({
-      //         top: 0 === a ? 350 : a - 80,
-      //         behavior: "smooth",
-      //       });
-      //   });
-      // $(e.target.closest("a")).trigger("click"),
-      // e.target.closest("a") &&
-      //   ((id = e.target.closest("a").getAttribute("href")),
-      //   "0px" === $(id + " .help-faq-droplist").css("height") &&
-      //     $(id + " .help-faq-toggle").trigger("click"));
     }),
       inputSearch.addEventListener("focusout", function () {
         areTipsOpen &&
@@ -346,12 +329,6 @@ if (!isFAQ) {
               '"'
           ),
           (t = t.substring(0, t.length - 2)),
-          // $(".help-faq-dropdown").not(t).parent().addClass("hidehits"),
-          // $(".hub-category").each(function () {
-          //   $(this).find(".hidehits").length ===
-          //     $(this).find(".help-faq-dropdown").length &&
-          //     $(this).addClass("hidehits");
-          // }),
           setTimeout(showReset, 200);
       }),
       $(document).on("keypress", "input", function (e) {
@@ -491,9 +468,11 @@ if (!isFAQ) {
       inputSearch.blur();
     }),
       $(document).on("keypress", "input", function (e) {
+        console.log("keypress-input-", e.which);
         if (e.which == 13) {
-          var inputVal = $(this).val();
+          // var inputVal = $(this).val();
           const keyword = $(".input-search").val();
+          console.log("keypress-input-keyword-", keyword);
           // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
           if (keyword) window.open(`/searching?query=${keyword}`, "_self");
         }
