@@ -200,7 +200,7 @@ if (
   });
   inputSearch.addEventListener("focusout", function () {
     if (areTipsOpen) {
-      const keyword = $("#search").val();
+      // const keyword = $("#search").val();
       hideBG();
       unblurBackground();
       hideTips();
@@ -208,7 +208,7 @@ if (
       searchBox.css("display", "none");
       areTipsOpen = false;
       // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
-      if (keyword) window.open(`/searching?query=${keyword}`, "_self");
+      // if (keyword) window.open(`/searching?query=${keyword}`, "_self");
     }
   });
   inputSearch.addEventListener("focus", function () {
@@ -367,9 +367,9 @@ if (
       areTipsOpen &&
         (unblurBackground(), hideTips(), hideReset(), (areTipsOpen = !1));
 
-      const keyword = $(".input-search").val();
+      // const keyword = $(".input-search").val();
       // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
-      if (keyword) window.open(`/searching?query=${keyword}`, "_self");
+      // if (keyword) window.open(`/searching?query=${keyword}`, "_self");
     }),
     inputSearch.addEventListener("focus", function () {
       areTipsOpen
