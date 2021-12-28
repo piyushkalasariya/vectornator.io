@@ -1,4 +1,5 @@
-if (
+if (window.location.pathname.includes("/searching")) {
+} else if (
   !window.location.pathname.includes("/faq") &&
   !window.location.pathname.includes("/help-center")
 ) {
@@ -200,15 +201,12 @@ if (
   });
   inputSearch.addEventListener("focusout", function () {
     if (areTipsOpen) {
-      // const keyword = $("#search").val();
       hideBG();
       unblurBackground();
       hideTips();
       searchIcon.toggle();
       searchBox.css("display", "none");
       areTipsOpen = false;
-      // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
-      // if (keyword) window.open(`/searching?query=${keyword}`, "_self");
     }
   });
   inputSearch.addEventListener("focus", function () {
@@ -224,7 +222,15 @@ if (
     e.preventDefault();
     inputSearch.parentNode.reset();
     inputSearch.blur();
-  });
+  }),
+    $(document).on("keypress", "input", function (e) {
+      if (e.which == 13) {
+        var inputVal = $(this).val();
+        const keyword = $(".input-search").val();
+        // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
+        if (keyword) window.open(`/searching?query=${keyword}`, "_self");
+      }
+    });
 } else {
   const searchTips = document.createElement("div");
   (searchTips.className = "search-tips"), (searchTips.style.display = "none");
@@ -366,10 +372,6 @@ if (
     inputSearch.addEventListener("focusout", function () {
       areTipsOpen &&
         (unblurBackground(), hideTips(), hideReset(), (areTipsOpen = !1));
-
-      // const keyword = $(".input-search").val();
-      // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
-      // if (keyword) window.open(`/searching?query=${keyword}`, "_self");
     }),
     inputSearch.addEventListener("focus", function () {
       areTipsOpen
@@ -409,5 +411,13 @@ if (
             $(this).addClass("hidehits");
         }),
         setTimeout(showReset, 200);
+    }),
+    $(document).on("keypress", "input", function (e) {
+      if (e.which == 13) {
+        var inputVal = $(this).val();
+        const keyword = $(".input-search").val();
+        // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
+        if (keyword) window.open(`/searching?query=${keyword}`, "_self");
+      }
     });
 }
