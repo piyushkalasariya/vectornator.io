@@ -3,6 +3,54 @@ const isSearching = window.location.pathname.includes("/searching");
 const isHelpCenter = window.location.pathname.includes("/help-center");
 const colorClass = isFAQ ? "is-dark" : "is-light";
 
+const getHeading = (data) => {
+  const { hit } = data;
+  let h1 = "";
+  let h2 = "";
+  let h3 = "";
+  // console.log("render-hits-", hit);
+  h1 = instantsearch.highlight({
+    attribute: "h1",
+    hit: hit,
+    highlightedTagName: "strong",
+  });
+  if (hit.tag === "h1") {
+    h1 = instantsearch.highlight({
+      attribute: "name",
+      hit: hit,
+      highlightedTagName: "strong",
+    });
+  }
+  if (hit.tag === "h2") {
+    h2 = instantsearch.highlight({
+      attribute: "name",
+      hit: hit,
+      highlightedTagName: "strong",
+    });
+  }
+  if (hit.tag === "h3") {
+    h2 = instantsearch.highlight({
+      attribute: "h2",
+      hit: hit,
+      highlightedTagName: "strong",
+    });
+    h3 = instantsearch.highlight({
+      attribute: "name",
+      hit: hit,
+      highlightedTagName: "strong",
+    });
+  }
+  let heading = h1;
+  const seperator = `<span style="color:grey;">></span>`;
+  if (h2) {
+    heading += ` ${seperator} ` + h2;
+  }
+  if (h3) {
+    heading += ` ${seperator} ` + h3;
+  }
+  return heading;
+};
+
 const getSearchList = (data) => {
   if (!data) return "";
   const { groupedByCategorie } = data;
@@ -19,61 +67,11 @@ const getSearchList = (data) => {
         </div>
       ${item.hits
         .map((hit) => {
-          let link = hit.h1Slug;
-          let h1 = "";
-          let h2 = "";
-          let h3 = "";
-          // console.log("render-hits-", hit);
-          h1 = instantsearch.highlight({
-            attribute: "h1",
-            hit: hit,
-            highlightedTagName: "strong",
-          });
-          if (hit.tag === "h1") {
-            h1 = instantsearch.highlight({
-              attribute: "name",
-              hit: hit,
-              highlightedTagName: "strong",
-            });
-          }
-          if (hit.tag === "h2") {
-            h2 = instantsearch.highlight({
-              attribute: "name",
-              hit: hit,
-              highlightedTagName: "strong",
-            });
-            link += `#${hit.slug}`;
-          }
-          if (hit.tag === "h3") {
-            h2 = instantsearch.highlight({
-              attribute: "h2",
-              hit: hit,
-              highlightedTagName: "strong",
-            });
-            h3 = instantsearch.highlight({
-              attribute: "name",
-              hit: hit,
-              highlightedTagName: "strong",
-            });
-            link += `#${hit.slug}`;
-          }
-          let heading = h1;
-          const seperator = `<span style="color:grey;">></span>`;
-          if (h2) {
-            heading += ` ${seperator} ` + h2;
-          }
-          if (h3) {
-            heading += ` ${seperator} ` + h3;
-          }
+          const HEADING = getHeading({ hit });
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
-          // console.log("search-", {
-          //   location: window.location,
-          //   objectID: hit.objectID,
-          //   SEARCH_LINK,
-          // });
           return `
             <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block">
-              <div class="st-name">${heading}</div>
+              <div class="st-name">${HEADING}</div>
               <div class="st-text one-line">
                 ${instantsearch.highlight({
                   attribute: "text",
@@ -99,6 +97,124 @@ const getSearchList = (data) => {
 
 if (!isFAQ) {
   if (isSearching) {
+    $("form.search").remove();
+    let searchTips = document.querySelector(".searching-content");
+    let noResInner = document.querySelector(".sc-no-results").innerHTML;
+    document.querySelector(".sc-no-results").remove();
+    let noResults = document.createElement("div");
+    noResults.classList = "sc-no-results";
+    noResults.innerHTML = noResInner;
+    // console.log(noResults);
+    let query, arrLength;
+    const searchClient = algoliasearch(
+      "3IX4R6F9TD",
+      "4490249ded50f765cb1b2668f1a26519"
+    );
+    const search = instantsearch({
+      indexName: "test_GLOBAL_SEARCH",
+      searchClient,
+      searchParameters: { attributesToSnippet: ["text:50;"] },
+      searchFunction(helper) {
+        query = helper.state.query;
+        console.log("search-query-", query);
+        if (helper.state.query === "") {
+          helper.state.hitsPerPage = 5;
+        } else {
+          helper.state.hitsPerPage = 20;
+        }
+        helper.search();
+      },
+    });
+    // Group results by distinct attribute (year) function
+    function distinctResults(results, attributeForDistinct) {
+      let d = {};
+      for (const e of results)
+        d[e[attributeForDistinct]] = [...(d[e[attributeForDistinct]] || []), e];
+      return Object.entries(d).map(([k, v]) => ({ hits: v, categorie: k }));
+    }
+    // Create the render function
+    const renderHits = (renderOptions, isFirstRender) => {
+      const { hits, widgetParams } = renderOptions;
+      // If no results
+      if (renderOptions.results == undefined) {
+        return;
+      }
+      const groupedByCategorie = distinctResults(hits, "categorie");
+      widgetParams.container.innerHTML = `
+        <div class="sc-title-box">
+          <h2 class="alt-h3 is-black">${hits.length} results for “${query}”</h2>
+        </div>
+      ${
+        groupedByCategorie.length > 0
+          ? `
+        ${groupedByCategorie
+          .map(
+            (item) => `
+          <div class="sc-group">
+            <h3 class="text-body-1 is-black-50-text">${item.categorie}</h3>
+            <div class="sc-list">
+              ${item.hits
+                .map((hit) => {
+                  const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
+                  // let link = hit.slug;
+                  return `
+                <a href="${SEARCH_LINK}" class="sc-card w-inline-block">
+                  <h4 class="alt-h4 is-black no-margins">${instantsearch.highlight(
+                    {
+                      attribute: "name",
+                      hit: hit,
+                      highlightedTagName: "strong",
+                    }
+                  )}</h4>
+                  <div class="text-body-2">
+                    ${instantsearch.snippet({
+                      attribute: "text",
+                      hit: hit,
+                      highlightedTagName: "strong",
+                    })}
+                  </div>
+                  <div class="sc-read-more">
+                    <div class="svg in-help-link w-embed">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><g clip-path="url(#clip0)"><path d="M16 8C16 3.6 12.4 0 8 0 3.6 0 0 3.6 0 8 0 12.4 3.6 16 8 16 12.4 16 16 12.4 16 8ZM3.9 8C3.9 7.6 4.1 7.3 4.5 7.3L8.4 7.3 10.1 7.4 9.2 6.6 8.2 5.7C8.1 5.6 8 5.4 8 5.2 8 4.9 8.3 4.6 8.7 4.6 8.8 4.6 9 4.7 9.1 4.8L11.8 7.5C12 7.6 12.1 7.8 12.1 8 12.1 8.2 12 8.3 11.8 8.5L9.1 11.2C9 11.3 8.8 11.4 8.7 11.4 8.3 11.4 8 11.1 8 10.8 8 10.6 8.1 10.4 8.2 10.3L9.2 9.4 10.1 8.6 8.4 8.7 4.5 8.7C4.1 8.7 3.9 8.4 3.9 8Z" fill="currentColor"></path></g><defs><clipPath><rect width="16" height="16" transform="translate(0 16)rotate(-90)" fill="white"></rect></clipPath></defs></svg>
+                    </div>
+                  <div class="text-body-2">Read More</div>
+                  </div>
+                </a>`;
+                })
+                .join("")}
+            </div>
+          </div>`
+          )
+          .join("")}`
+          : `${noResults.outerHTML}`
+      }`;
+    };
+    const customHits =
+      instantsearch.connectors.connectHitsWithInsights(renderHits);
+    search.addWidgets([
+      customHits({
+        container: searchTips,
+        transformItems: function (items) {
+          return items.map((item) => ({
+            ...item,
+          }));
+        },
+      }),
+    ]);
+    search.addWidget(
+      instantsearch.widgets.searchBox({
+        container: ".searching-search-box",
+        placeholder: "Search...",
+        showReset: false,
+        cssClasses: {
+          root: "",
+          form: ["search", "w-form"],
+          input: ["input-search", "w-input", "searchfocus"],
+          submit: ["search-button", "w-button"],
+        },
+      })
+    );
+    search.start();
   } else if (isHelpCenter) {
     const searchTips = document.createElement("div");
     (searchTips.className = "search-tips"), (searchTips.style.display = "none");
@@ -175,21 +291,25 @@ if (!isFAQ) {
       resetChange = () => ("" == inputSearch.value ? hideReset() : showReset()),
       introH2 = $(".intro h2").text();
     $(".search-tips").mousedown(function (e) {
-      window.innerWidth <= 478 &&
-        $(e.target.closest("a")).click(function (e) {
-          e.preventDefault(),
-            e.stopPropagation(),
-            (a = document.querySelector(this.getAttribute("href")).offsetTop),
-            window.scrollTo({
-              top: 0 === a ? 350 : a - 80,
-              behavior: "smooth",
-            });
-        }),
-        $(e.target.closest("a")).trigger("click"),
-        e.target.closest("a") &&
-          ((id = e.target.closest("a").getAttribute("href")),
-          "0px" === $(id + " .help-faq-droplist").css("height") &&
-            $(id + " .help-faq-toggle").trigger("click"));
+      console.log("mouse-down-working");
+      e.preventDefault();
+      $(e.target.closest("a")).trigger("click");
+      // window.innerWidth <= 478 &&
+      //   $(e.target.closest("a")).click(function (e) {
+      //     e.preventDefault(),
+      //       e.stopPropagation(),
+      //       console.log("working-on-click");
+      //     (a = document.querySelector(this.getAttribute("href")).offsetTop),
+      //       window.scrollTo({
+      //         top: 0 === a ? 350 : a - 80,
+      //         behavior: "smooth",
+      //       });
+      //   });
+      // $(e.target.closest("a")).trigger("click"),
+      // e.target.closest("a") &&
+      //   ((id = e.target.closest("a").getAttribute("href")),
+      //   "0px" === $(id + " .help-faq-droplist").css("height") &&
+      //     $(id + " .help-faq-toggle").trigger("click"));
     }),
       inputSearch.addEventListener("focusout", function () {
         areTipsOpen &&
@@ -226,17 +346,17 @@ if (!isFAQ) {
               '"'
           ),
           (t = t.substring(0, t.length - 2)),
-          $(".help-faq-dropdown").not(t).parent().addClass("hidehits"),
-          $(".hub-category").each(function () {
-            $(this).find(".hidehits").length ===
-              $(this).find(".help-faq-dropdown").length &&
-              $(this).addClass("hidehits");
-          }),
+          // $(".help-faq-dropdown").not(t).parent().addClass("hidehits"),
+          // $(".hub-category").each(function () {
+          //   $(this).find(".hidehits").length ===
+          //     $(this).find(".help-faq-dropdown").length &&
+          //     $(this).addClass("hidehits");
+          // }),
           setTimeout(showReset, 200);
       }),
       $(document).on("keypress", "input", function (e) {
         if (e.which == 13) {
-          var inputVal = $(this).val();
+          // var inputVal = $(this).val();
           const keyword = $(".input-search").val();
           // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
           if (keyword) window.open(`/searching?query=${keyword}`, "_self");
@@ -252,6 +372,7 @@ if (!isFAQ) {
     const search = instantsearch({
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
+      // searchParameters: { attributesToSnippet: ["text:50;"] },
       searchFunction(helper) {
         if (helper.state.query === "") {
           helper.state.hitsPerPage = 5;
@@ -344,12 +465,6 @@ if (!isFAQ) {
     $(".search-tips").mousedown(function (e) {
       e.preventDefault();
       $(e.target.closest("a")).trigger("click");
-      if (e.target.closest("a")) {
-        id = e.target.closest("a").getAttribute("href");
-        if ($(id + " .help-faq-droplist").css("height") === "0px") {
-          $(id + " .help-faq-toggle").trigger("click");
-        }
-      }
     });
     inputSearch.addEventListener("focusout", function () {
       if (areTipsOpen) {
