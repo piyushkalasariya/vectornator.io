@@ -334,7 +334,7 @@ if (!isFAQ) {
       $(document).on("keypress", "input", function (e) {
         if (e.which == 13) {
           // var inputVal = $(this).val();
-          const keyword = $(".input-search").val();
+          const keyword = $("#search").val();
           // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
           if (keyword) window.open(`/searching?query=${keyword}`, "_self");
         }
@@ -471,8 +471,8 @@ if (!isFAQ) {
         console.log("keypress-input-", e.which);
         if (e.which == 13) {
           // var inputVal = $(this).val();
-          const keyword = $(".input-search").val();
-          console.log("keypress-input-keyword-", keyword);
+          const keyword = $("#search").val();
+          // console.log("keypress-input-keyword-", keyword);
           // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
           if (keyword) window.open(`/searching?query=${keyword}`, "_self");
         }
