@@ -110,14 +110,29 @@ if (!isFAQ) {
       "3IX4R6F9TD",
       "4490249ded50f765cb1b2668f1a26519"
     );
+    // const index = instantsearch.widgets.index({
+    //   indexName: "test_GLOBAL_SEARCH",
+    //   attributesToSnippet: ["text:100"],
+    // });
     const search = instantsearch({
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
-      searchParameters: { attributesToSnippet: ["text:50;"] },
+      routing: true,
+      // searchParameters: { attributesToSnippet: ["text:100;"] },
       searchFunction(helper) {
         query = helper.state.query;
         // console.log("search-query-", query);
         if (helper.state.query === "") {
+          const urlParam = window.location.search;
+          if (urlParam) {
+            const searchParams = new URLSearchParams(urlParam);
+            if (searchParams.has("query")) {
+              const searchQuery = searchParams.get("query");
+              if (searchQuery) {
+                query = helper.state.query = searchQuery.trim();
+              }
+            }
+          }
           helper.state.hitsPerPage = 5;
         } else {
           helper.state.hitsPerPage = 20;
@@ -155,31 +170,28 @@ if (!isFAQ) {
             <div class="sc-list">
               ${item.hits
                 .map((hit) => {
+                  // console.log("hit-", hit);
                   const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
+                  const HEADING = getHeading({ hit });
                   // let link = hit.slug;
                   return `
-                <a href="${SEARCH_LINK}" class="sc-card w-inline-block">
-                  <h4 class="alt-h4 is-black no-margins">${instantsearch.highlight(
-                    {
-                      attribute: "name",
-                      hit: hit,
-                      highlightedTagName: "strong",
-                    }
-                  )}</h4>
-                  <div class="text-body-2">
-                    ${instantsearch.snippet({
-                      attribute: "text",
-                      hit: hit,
-                      highlightedTagName: "strong",
-                    })}
-                  </div>
-                  <div class="sc-read-more">
-                    <div class="svg in-help-link w-embed">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><g clip-path="url(#clip0)"><path d="M16 8C16 3.6 12.4 0 8 0 3.6 0 0 3.6 0 8 0 12.4 3.6 16 8 16 12.4 16 16 12.4 16 8ZM3.9 8C3.9 7.6 4.1 7.3 4.5 7.3L8.4 7.3 10.1 7.4 9.2 6.6 8.2 5.7C8.1 5.6 8 5.4 8 5.2 8 4.9 8.3 4.6 8.7 4.6 8.8 4.6 9 4.7 9.1 4.8L11.8 7.5C12 7.6 12.1 7.8 12.1 8 12.1 8.2 12 8.3 11.8 8.5L9.1 11.2C9 11.3 8.8 11.4 8.7 11.4 8.3 11.4 8 11.1 8 10.8 8 10.6 8.1 10.4 8.2 10.3L9.2 9.4 10.1 8.6 8.4 8.7 4.5 8.7C4.1 8.7 3.9 8.4 3.9 8Z" fill="currentColor"></path></g><defs><clipPath><rect width="16" height="16" transform="translate(0 16)rotate(-90)" fill="white"></rect></clipPath></defs></svg>
-                    </div>
-                  <div class="text-body-2">Read More</div>
-                  </div>
-                </a>`;
+                    <a href="${SEARCH_LINK}" class="sc-card w-inline-block">
+                      <h4 class="alt-h4 is-black no-margins">${HEADING}</h4>
+                      <div class="text-body-2 one-line">
+                        ${instantsearch.snippet({
+                          attribute: "text",
+                          hit: hit,
+                          highlightedTagName: "strong",
+                        })}
+                      </div>
+                      <div class="sc-read-more">
+                        <div class="svg in-help-link w-embed">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><g clip-path="url(#clip0)"><path d="M16 8C16 3.6 12.4 0 8 0 3.6 0 0 3.6 0 8 0 12.4 3.6 16 8 16 12.4 16 16 12.4 16 8ZM3.9 8C3.9 7.6 4.1 7.3 4.5 7.3L8.4 7.3 10.1 7.4 9.2 6.6 8.2 5.7C8.1 5.6 8 5.4 8 5.2 8 4.9 8.3 4.6 8.7 4.6 8.8 4.6 9 4.7 9.1 4.8L11.8 7.5C12 7.6 12.1 7.8 12.1 8 12.1 8.2 12 8.3 11.8 8.5L9.1 11.2C9 11.3 8.8 11.4 8.7 11.4 8.3 11.4 8 11.1 8 10.8 8 10.6 8.1 10.4 8.2 10.3L9.2 9.4 10.1 8.6 8.4 8.7 4.5 8.7C4.1 8.7 3.9 8.4 3.9 8Z" fill="currentColor"></path></g><defs><clipPath><rect width="16" height="16" transform="translate(0 16)rotate(-90)" fill="white"></rect></clipPath></defs></svg>
+                        </div>
+                      <div class="text-body-2">Read More</div>
+                      </div>
+                    </a>
+                  `;
                 })
                 .join("")}
             </div>
@@ -468,7 +480,7 @@ if (!isFAQ) {
       inputSearch.blur();
     }),
       $(document).on("keypress", "input", function (e) {
-        console.log("keypress-input-", e.which);
+        // console.log("keypress-input-", e.which);
         if (e.which == 13) {
           // var inputVal = $(this).val();
           const keyword = $("#search").val();
