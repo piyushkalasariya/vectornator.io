@@ -346,7 +346,8 @@ if (!isFAQ) {
       $(document).on("keypress", "input", function (e) {
         if (e.which == 13) {
           // var inputVal = $(this).val();
-          const keyword = $("#search").val();
+          // const keyword = $("#search").val();
+          const keyword = $(".input-search").val();
           // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
           if (keyword) window.open(`/searching?query=${keyword}`, "_self");
         }
