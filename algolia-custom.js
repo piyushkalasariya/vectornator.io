@@ -134,8 +134,11 @@ if (!isFAQ) {
             }
           }
           helper.state.hitsPerPage = 5;
+          const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
+          helper.state.facetFilters = facetFilters;
         } else {
           helper.state.hitsPerPage = 20;
+          helper.state.facetFilters = [];
         }
         helper.search();
       },
@@ -237,12 +240,23 @@ if (!isFAQ) {
       search = instantsearch({
         indexName: "test_GLOBAL_SEARCH",
         searchClient: searchClient,
-        searchFunction(e) {
-          "" === e.state.query
-            ? (e.state.hitsPerPage = 5)
-            : (e.state.hitsPerPage = 20),
-            e.search();
+        searchFunction(helper) {
+          if (helper.state.query === "") {
+            helper.state.hitsPerPage = 5;
+            const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
+            helper.state.facetFilters = facetFilters;
+          } else {
+            helper.state.facetFilters = [];
+            helper.state.hitsPerPage = 20;
+          }
+          helper.search();
         },
+        // searchFunction(e) {
+        //   "" === e.state.query
+        //     ? (e.state.hitsPerPage = 5)
+        //     : (e.state.hitsPerPage = 20),
+        //     e.search();
+        // },
       });
     function distinctResults(e, t) {
       let s = {};
