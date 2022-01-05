@@ -491,8 +491,10 @@ if (!isFAQ) {
     });
     clearSearch.addEventListener("mousedown", function (e) {
       e.preventDefault();
+      e.stopPropagation();
+      blurBackground();
       inputSearch.parentNode.reset();
-      inputSearch.blur();
+      // inputSearch.blur();
     }),
       $(document).on("keypress", "input", function (e) {
         // console.log("keypress-input-", e.which);
