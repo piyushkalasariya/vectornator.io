@@ -235,8 +235,9 @@ if (!isFAQ) {
     if (inputSearch) {
       inputSearch.addEventListener("focus", function () {
         // console.log("input-value-", inputSearch.value);
-        if (inputSearch.value) $(".ais-SearchBox-reset").css("display", "none");
-        else $(".ais-SearchBox-reset").css("display", "block");
+        if (inputSearch.value)
+          $(".ais-SearchBox-reset").css("display", "block");
+        else $(".ais-SearchBox-reset").css("display", "none");
       });
     }
   } else if (isHelpCenter) {
