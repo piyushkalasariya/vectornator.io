@@ -234,7 +234,7 @@ if (!isFAQ) {
     const inputSearch = document.querySelector(".searchfocus");
     if (inputSearch) {
       inputSearch.addEventListener("keyup", function () {
-        console.length("search-val", inputSearch.value);
+        console.log("search-val", inputSearch.value);
         if (inputSearch.value === "")
           $(".ais-SearchBox-reset").css("display", "none");
         else $(".ais-SearchBox-reset").css("display", "block");
