@@ -241,7 +241,10 @@ if (!isFAQ) {
     }
     $(".ais-SearchBox-reset").on("click", function (e) {
       e.preventDefault();
-      $(".ais-SearchBox-reset").css("display", "none");
+      inputSearch.value = "";
+      setTimeout(() => {
+        $(".ais-SearchBox-reset").css("display", "none");
+      }, 100);
     });
   } else if (isHelpCenter) {
     const searchTips = document.createElement("div");
