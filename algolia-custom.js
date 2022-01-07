@@ -233,9 +233,8 @@ if (!isFAQ) {
     // .ais-SearchBox-reset
     const inputSearch = document.querySelector(".searchfocus");
     if (inputSearch) {
-      inputSearch.addEventListener("focus", function () {
-        // console.log("input-value-", inputSearch.value);
-        if (inputSearch.value)
+      inputSearch.addEventListener("keyup", function () {
+        if (inputSearch.value.length)
           $(".ais-SearchBox-reset").css("display", "block");
         else $(".ais-SearchBox-reset").css("display", "none");
       });
