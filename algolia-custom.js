@@ -232,6 +232,7 @@ if (!isFAQ) {
     search.start();
     // .ais-SearchBox-reset
     const inputSearch = document.querySelector(".searchfocus");
+    if (inputSearch.value) $(".ais-SearchBox-reset").css("display", "block");
     if (inputSearch) {
       inputSearch.addEventListener("keyup", function () {
         if (inputSearch.value === "")
