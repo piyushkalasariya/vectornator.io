@@ -234,12 +234,16 @@ if (!isFAQ) {
     const inputSearch = document.querySelector(".searchfocus");
     if (inputSearch) {
       inputSearch.addEventListener("keyup", function () {
-        console.log("search-val", inputSearch.value);
         if (inputSearch.value === "")
           $(".ais-SearchBox-reset").css("display", "none");
         else $(".ais-SearchBox-reset").css("display", "block");
       });
     }
+    $(".ais-SearchBox-reset").on("click", function (e) {
+      if (inputSearch.value === "")
+        $(".ais-SearchBox-reset").css("display", "none");
+      else $(".ais-SearchBox-reset").css("display", "block");
+    });
   } else if (isHelpCenter) {
     const searchTips = document.createElement("div");
     (searchTips.className = "search-tips"), (searchTips.style.display = "none");
