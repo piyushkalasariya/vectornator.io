@@ -239,12 +239,10 @@ if (!isFAQ) {
         else $(".ais-SearchBox-reset").css("display", "block");
       });
     }
-    $(".ais-SearchBox-reset").on("click", function (e) {
-      e.preventDefault();
-      inputSearch.value = "";
+    $(".ais-SearchBox-reset").on("click", function () {
       setTimeout(() => {
         $(".ais-SearchBox-reset").css("display", "none");
-      }, 100);
+      }, 500);
     });
   } else if (isHelpCenter) {
     const searchTips = document.createElement("div");
