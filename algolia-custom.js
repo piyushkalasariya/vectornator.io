@@ -230,6 +230,15 @@ if (!isFAQ) {
       })
     );
     search.start();
+    // .ais-SearchBox-reset
+    const inputSearch = document.querySelector(".searchfocus");
+    if (inputSearch) {
+      inputSearch.addEventListener("focus", function () {
+        // console.log("input-value-", inputSearch.value);
+        if (inputSearch.value) $(".ais-SearchBox-reset").css("display", "none");
+        else $(".ais-SearchBox-reset").css("display", "block");
+      });
+    }
   } else if (isHelpCenter) {
     const searchTips = document.createElement("div");
     (searchTips.className = "search-tips"), (searchTips.style.display = "none");
