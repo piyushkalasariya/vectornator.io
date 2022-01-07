@@ -240,9 +240,8 @@ if (!isFAQ) {
       });
     }
     $(".ais-SearchBox-reset").on("click", function (e) {
-      if (inputSearch.value === "")
-        $(".ais-SearchBox-reset").css("display", "none");
-      else $(".ais-SearchBox-reset").css("display", "block");
+      e.preventDefault();
+      $(".ais-SearchBox-reset").css("display", "none");
     });
   } else if (isHelpCenter) {
     const searchTips = document.createElement("div");
