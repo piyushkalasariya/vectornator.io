@@ -64,15 +64,12 @@ const getSearchList = data => {
 			const newHits = item.hits.slice(0, 5);
 			const matchCount = [];
 			const sortHits = [];
-			console.log('newHits-', newHits);
 			newHits.map((hit, index) => {
 				const count = (hit._highlightResult.text.value.match(/<mark>/g) || [])
 					.length;
 				matchCount.push({ index, count });
 			});
-			console.log('index-before-sort-', matchCount);
 			matchCount.sort((a, b) => b.count - a.count);
-			console.log('index-after-sort-', matchCount);
 			matchCount.map((sort, sortIndex) => {
 				sortHits[sortIndex] = newHits[sort.index];
 			});
@@ -182,13 +179,26 @@ if (!isFAQ) {
 				groupedByCategorie.length > 0
 					? `
         ${groupedByCategorie
-					.map(
-						item => `
+					.map(item => {
+						const newHits = item.hits.slice(0, 5);
+						const matchCount = [];
+						const sortHits = [];
+						newHits.map((hit, index) => {
+							const count = (
+								hit._highlightResult.text.value.match(/<mark>/g) || []
+							).length;
+							matchCount.push({ index, count });
+						});
+						matchCount.sort((a, b) => b.count - a.count);
+						matchCount.map((sort, sortIndex) => {
+							sortHits[sortIndex] = newHits[sort.index];
+						});
+
+						return `
           <div class="sc-group">
             <h3 class="text-body-1 is-black-50-text">${item.categorie}</h3>
             <div class="sc-list">
-              ${item.hits
-								.slice(0, 5)
+              ${sortHits
 								.map(hit => {
 									// console.log("hit-", hit);
 									const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
@@ -215,8 +225,8 @@ if (!isFAQ) {
 								})
 								.join('')}
             </div>
-          </div>`
-					)
+          </div>`;
+					})
 					.join('')}`
 					: `${noResults.outerHTML}`
 			}`;
