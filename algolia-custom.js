@@ -58,7 +58,7 @@ const getSearchList = (data) => {
   ${
     groupedByCategorie.length > 0
       ? `
-  ${groupedByCategorie
+  ${groupedByCategorie.slice(0, 5)
     .map(
       (item) => `
         <div class="st-group">
@@ -137,9 +137,7 @@ if (!isFAQ) {
           const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
           helper.state.facetFilters = facetFilters;
         } else {
-          helper.state.hitsPerPage = 20;
-          helper.state.maxFacetHits = 5;
-          helper.state.maxValuesPerFacet = 5;
+          helper.state.hitsPerPage = 40;
           helper.state.facetFilters = [];
         }
         helper.search();
@@ -167,7 +165,7 @@ if (!isFAQ) {
       ${
         groupedByCategorie.length > 0
           ? `
-        ${groupedByCategorie
+        ${groupedByCategorie.slice(0, 5)
           .map(
             (item) => `
           <div class="sc-group">
@@ -264,9 +262,7 @@ if (!isFAQ) {
             helper.state.facetFilters = facetFilters;
           } else {
             helper.state.facetFilters = [];
-            helper.state.maxFacetHits = 5;
-            helper.state.maxValuesPerFacet = 5;
-            helper.state.hitsPerPage = 20;
+            helper.state.hitsPerPage = 40;
           }
           helper.search();
         },
@@ -403,9 +399,7 @@ if (!isFAQ) {
           helper.state.facetFilters = facetFilters;
         } else {
           helper.state.facetFilters = [];
-          helper.state.maxFacetHits = 5;
-          helper.state.maxValuesPerFacet = 5;
-          helper.state.hitsPerPage = 20;
+          helper.state.hitsPerPage = 40;
         }
         helper.search();
       },
