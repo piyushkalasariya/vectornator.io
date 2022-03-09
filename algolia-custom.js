@@ -66,9 +66,8 @@ const getSearchList = data => {
 			const sortHits = [];
 			console.log('newHits-', newHits);
 			newHits.map((hit, index) => {
-				const count = (
-					hit._highlightResult.text.value.match(/ais-highlight/g) || []
-				).length;
+				const count = (hit._highlightResult.text.value.match(/<mark>/g) || [])
+					.length;
 				matchCount.push({ index, count });
 			});
 			console.log('index-before-sort-', matchCount);
