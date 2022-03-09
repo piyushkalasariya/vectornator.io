@@ -64,6 +64,7 @@ const getSearchList = data => {
 			const newHits = item.hits.slice(0, 5);
 			const matchCount = [];
 			const sortHits = [];
+			console.log('newHits-', newHits);
 			newHits.map((hit, index) => {
 				const count = (
 					hit._highlightResult.text.value.match(/ais-highlight/g) || []
@@ -82,7 +83,6 @@ const getSearchList = data => {
           <div class="subtitle-s">${item.categorie}</div>
         </div>
       ${sortHits
-				.slice(0, 5)
 				.map(hit => {
 					const HEADING = getHeading({ hit });
 					const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
