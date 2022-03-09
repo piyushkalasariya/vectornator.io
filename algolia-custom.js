@@ -139,6 +139,7 @@ if (!isFAQ) {
         } else {
           helper.state.hitsPerPage = 20;
           helper.state.maxFacetHits = 5;
+          helper.state.maxValuesPerFacet = 5;
           helper.state.facetFilters = [];
         }
         helper.search();
@@ -264,6 +265,7 @@ if (!isFAQ) {
           } else {
             helper.state.facetFilters = [];
             helper.state.maxFacetHits = 5;
+            helper.state.maxValuesPerFacet = 5;
             helper.state.hitsPerPage = 20;
           }
           helper.search();
@@ -402,6 +404,7 @@ if (!isFAQ) {
         } else {
           helper.state.facetFilters = [];
           helper.state.maxFacetHits = 5;
+          helper.state.maxValuesPerFacet = 5;
           helper.state.hitsPerPage = 20;
         }
         helper.search();
