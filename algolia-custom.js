@@ -58,14 +58,14 @@ const getSearchList = (data) => {
   ${
     groupedByCategorie.length > 0
       ? `
-  ${groupedByCategorie.slice(0, 5)
+  ${groupedByCategorie
     .map(
       (item) => `
         <div class="st-group">
           <div class="st-group-title ${colorClass}">
           <div class="subtitle-s">${item.categorie}</div>
         </div>
-      ${item.hits
+      ${item.hits.slice(0, 5)
         .map((hit) => {
           const HEADING = getHeading({ hit });
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
@@ -165,13 +165,13 @@ if (!isFAQ) {
       ${
         groupedByCategorie.length > 0
           ? `
-        ${groupedByCategorie.slice(0, 5)
+        ${groupedByCategorie
           .map(
             (item) => `
           <div class="sc-group">
             <h3 class="text-body-1 is-black-50-text">${item.categorie}</h3>
             <div class="sc-list">
-              ${item.hits
+              ${item.hits.slice(0, 5)
                 .map((hit) => {
                   // console.log("hit-", hit);
                   const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
