@@ -71,7 +71,7 @@ const getSearchList = data => {
 				matchCount.push({ index, count });
 			});
 			console.log('index-before-sort-', matchCount);
-			matchCount.sort((a, b) => a.count - b.count);
+			matchCount.sort((a, b) => b.count - a.count);
 			console.log('index-after-sort-', matchCount);
 			matchCount.map((sort, sortIndex) => {
 				sortHits[sortIndex] = newHits[sort.index];
