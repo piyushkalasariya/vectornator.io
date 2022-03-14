@@ -69,7 +69,7 @@ const getSearchList = data => {
 					.length;
 				matchCount.push({ index, count });
 			});
-			// matchCount.sort((a, b) => b.count - a.count);
+			matchCount.sort((a, b) => b.count - a.count);
 			matchCount.map((sort, sortIndex) => {
 				sortHits[sortIndex] = newHits[sort.index];
 			});
@@ -189,7 +189,7 @@ if (!isFAQ) {
 							).length;
 							matchCount.push({ index, count });
 						});
-						// matchCount.sort((a, b) => b.count - a.count);
+						matchCount.sort((a, b) => b.count - a.count);
 						matchCount.map((sort, sortIndex) => {
 							sortHits[sortIndex] = newHits[sort.index];
 						});
