@@ -8,9 +8,9 @@ const analyticsApiKye = "d4259a9011b8ecac7019fcdd1f7d2f84";
 const analyticsHeaders = {
   headers: {
     // "X-Forwarded-For": "163.53.179.1",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+    // "Access-Control-Allow-Origin": "*",
+    // "Access-Control-Allow-Credentials": "true",
+    // "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
     // "Access-Control-Allow-Headers": "163.53.179.1",
     // "Access-Control-Request-Headers": "163.53.179.1",
   },
