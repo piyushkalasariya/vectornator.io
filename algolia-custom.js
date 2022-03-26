@@ -1,4 +1,4 @@
-var ALGOLIA_INSIGHTS_SRC = "https://cdn.jsdelivr.net/npm/search-insights@2.0.3";
+
 
 const isFAQ = window.location.pathname.includes("/faq");
 const isSearching = window.location.pathname.includes("/searching");
@@ -7,20 +7,6 @@ const colorClass = isFAQ ? "is-dark" : "is-light";
 const appId = "3IX4R6F9TD";
 const apiKey = "4490249ded50f765cb1b2668f1a26519";
 const analyticsApiKye = "d4259a9011b8ecac7019fcdd1f7d2f84";
-
-!(function (e, a, t, n, s, i, c) {
-  (e.AlgoliaAnalyticsObject = s),
-    (e[s] =
-      e[s] ||
-      function () {
-        (e[s].queue = e[s].queue || []).push(arguments);
-      }),
-    (i = a.createElement(t)),
-    (c = a.getElementsByTagName(t)[0]),
-    (i.async = 1),
-    (i.src = n),
-    c.parentNode.insertBefore(i, c);
-})(window, document, "script", ALGOLIA_INSIGHTS_SRC, "aa");
 
 function getUserIP(onNewIP) {
   //  onNewIp - your listener function for new IPs
@@ -152,7 +138,11 @@ const getSearchList = (data) => {
           const HEADING = getHeading({ hit });
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
           return `
-            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${bindEvent('click', hit, 'Search Result Clicked')}>
+            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${bindEvent(
+            "click",
+            hit,
+            "Search Result Clicked"
+          )}>
               <div class="st-name">${HEADING}</div>
               <div class="st-text one-line">
                 ${instantsearch.highlight({
@@ -475,6 +465,33 @@ if (!isFAQ) {
     const searchTips = document.querySelector(".search-tips");
     if (searchTips) searchTips.style.display = "none";
     const searchClient = algoliasearch(appId, apiKey);
+    // analytics start
+    window.aa("init", {
+      appId,
+      apiKey: analyticsApiKye,
+      useCookie: true,
+    });
+    const insightsMiddleware =
+      instantsearch.middlewares.createInsightsMiddleware({
+        insightsClient: window.aa,
+        insightsInitParams: {
+          useCookie: true,
+        },
+        // onEvent: (event, aa) => {
+        //   const { insightsMethod, payload, widgetType, eventType } = event;
+
+        //   // Send the event to Algolia
+        //   aa(insightsMethod, payload);
+
+        //   // Send the event to a third-party tracker
+        //   if (widgetType === 'ais.hits' && eventType === 'click') {
+        //     thirdPartyTracker.send('Product Clicked', payload);
+        //   }
+        // }
+      });
+    search.use(insightsMiddleware);
+    window.aa("setUserToken", "piyushkalsariya");
+    // analytics end
     const search = instantsearch({
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
@@ -546,31 +563,6 @@ if (!isFAQ) {
     let searchInputIcon = document.querySelectorAll(".sn-search-box .svg")[0];
     let resetIcon = document.querySelectorAll(".sn-search-box .svg")[1];
     resetIcon.classList.add("reset");
-    window.aa("init", {
-      appId,
-      apiKey: analyticsApiKye,
-      useCookie: true,
-    });
-    const insightsMiddleware =
-      instantsearch.middlewares.createInsightsMiddleware({
-        insightsClient: window.aa,
-        insightsInitParams: {
-          useCookie: true,
-        },
-        // onEvent: (event, aa) => {
-        //   const { insightsMethod, payload, widgetType, eventType } = event;
-      
-        //   // Send the event to Algolia
-        //   aa(insightsMethod, payload);
-      
-        //   // Send the event to a third-party tracker
-        //   if (widgetType === 'ais.hits' && eventType === 'click') {
-        //     thirdPartyTracker.send('Product Clicked', payload);
-        //   }
-        // }
-      });
-    search.use(insightsMiddleware);
-    window.aa("setUserToken", "piyushkalsariya");
     search.start();
     document.querySelector(".ais-SearchBox").prepend(searchInputIcon);
     document.querySelector(".ais-SearchBox").append(resetIcon);
