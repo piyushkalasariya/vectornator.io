@@ -482,7 +482,9 @@ if (!isFAQ) {
       appId, // temp
       apiKey, // temp
       searchParameters: {
-        clickAnalytics: true // <- adding clickAnalytics true enables queryID
+        clickAnalytics: true, // <- adding clickAnalytics true enables queryID
+        enablePersonalization: true, // To enable personalization, the search parameter enablePersonalization must be set to true.
+        analytics: true,
       },
       // searchParameters: { attributesToSnippet: ["text:50;"] },
       searchFunction(helper) {
@@ -542,7 +544,7 @@ if (!isFAQ) {
       });
     });
 
-    
+
     // Group results by distinct attribute (year) function
     function distinctResults(results, attributeForDistinct) {
       let d = {};
