@@ -359,6 +359,7 @@ if (!isFAQ) {
       return Object.entries(s).map(([e, t]) => ({ hits: t, categorie: e }));
     }
     const renderHits = (e, t) => {
+        console.log('renderHits-', {e,t})
         const { hits: s, widgetParams: r } = e;
         if (null == e.results) return;
         const n = distinctResults(s, "categorie");
