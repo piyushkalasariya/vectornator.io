@@ -1,5 +1,3 @@
-
-
 const isFAQ = window.location.pathname.includes("/faq");
 const isSearching = window.location.pathname.includes("/searching");
 const isHelpCenter = window.location.pathname.includes("/help-center");
@@ -7,6 +5,9 @@ const colorClass = isFAQ ? "is-dark" : "is-light";
 const appId = "3IX4R6F9TD";
 const apiKey = "4490249ded50f765cb1b2668f1a26519";
 const analyticsApiKye = "d4259a9011b8ecac7019fcdd1f7d2f84";
+const analyticsHeaders = {
+  headers: { "X-Forwarded-For": "163.53.179.1" },
+};
 
 function getUserIP(onNewIP) {
   //  onNewIp - your listener function for new IPs
@@ -358,11 +359,14 @@ if (!isFAQ) {
       return Object.entries(s).map(([e, t]) => ({ hits: t, categorie: e }));
     }
     const renderHits = (e, t) => {
-        console.log('renderHits-', {e,t})
+        console.log("renderHits-", { e, t });
         const { hits: s, widgetParams: r, bindEvent } = e;
         if (null == e.results) return;
         const n = distinctResults(s, "categorie");
-        r.container.innerHTML = getSearchList({ groupedByCategorie: n, bindEvent });
+        r.container.innerHTML = getSearchList({
+          groupedByCategorie: n,
+          bindEvent,
+        });
       },
       customHits = instantsearch.connectors.connectHitsWithInsights(renderHits);
     search.addWidgets([
@@ -464,7 +468,7 @@ if (!isFAQ) {
   } else {
     const searchTips = document.querySelector(".search-tips");
     if (searchTips) searchTips.style.display = "none";
-    const searchClient = algoliasearch(appId, apiKey);
+    const searchClient = algoliasearch(appId, apiKey, analyticsHeaders);
     const search = instantsearch({
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
@@ -478,6 +482,8 @@ if (!isFAQ) {
           helper.state.facetFilters = [];
           helper.state.hitsPerPage = 40;
         }
+        helper.state.clickAnalytics = true;
+        helper.state.analytics= true;
         helper.search();
       },
     });
@@ -528,7 +534,10 @@ if (!isFAQ) {
         return;
       }
       const groupedByCategorie = distinctResults(hits, "categorie");
-      widgetParams.container.innerHTML = getSearchList({ groupedByCategorie, bindEvent });
+      widgetParams.container.innerHTML = getSearchList({
+        groupedByCategorie,
+        bindEvent,
+      });
     };
     const customHits =
       instantsearch.connectors.connectHitsWithInsights(renderHits);
