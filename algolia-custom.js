@@ -479,6 +479,11 @@ if (!isFAQ) {
     const search = instantsearch({
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
+      appId, // temp
+      apiKey, // temp
+      searchParameters: {
+        clickAnalytics: true // <- adding clickAnalytics true enables queryID
+      },
       // searchParameters: { attributesToSnippet: ["text:50;"] },
       searchFunction(helper) {
         if (helper.state.query === "") {
@@ -526,7 +531,18 @@ if (!isFAQ) {
     //   alert("Got IP! :" + ip);
     //   aa('setUserToken', ip)
     // });
+    search.once("render", () => {
+      window.aa("initSearch", {
+        getQueryID: () => {
+          return (
+            search.helper.lastResults &&
+            search.helper.lastResults._rawResults[0].queryID
+          );
+        }
+      });
+    });
 
+    
     // Group results by distinct attribute (year) function
     function distinctResults(results, attributeForDistinct) {
       let d = {};
