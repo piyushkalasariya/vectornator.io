@@ -466,6 +466,22 @@ if (!isFAQ) {
     const searchTips = document.querySelector(".search-tips");
     if (searchTips) searchTips.style.display = "none";
     const searchClient = algoliasearch(appId, apiKey);
+    const search = instantsearch({
+      indexName: "test_GLOBAL_SEARCH",
+      searchClient,
+      // searchParameters: { attributesToSnippet: ["text:50;"] },
+      searchFunction(helper) {
+        if (helper.state.query === "") {
+          helper.state.hitsPerPage = 5;
+          const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
+          helper.state.facetFilters = facetFilters;
+        } else {
+          helper.state.facetFilters = [];
+          helper.state.hitsPerPage = 40;
+        }
+        helper.search();
+      },
+    });
     // analytics start
     window.aa("init", {
       appId,
@@ -493,22 +509,6 @@ if (!isFAQ) {
     search.use(insightsMiddleware);
     window.aa("setUserToken", "piyushkalsariya");
     // analytics end
-    const search = instantsearch({
-      indexName: "test_GLOBAL_SEARCH",
-      searchClient,
-      // searchParameters: { attributesToSnippet: ["text:50;"] },
-      searchFunction(helper) {
-        if (helper.state.query === "") {
-          helper.state.hitsPerPage = 5;
-          const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
-          helper.state.facetFilters = facetFilters;
-        } else {
-          helper.state.facetFilters = [];
-          helper.state.hitsPerPage = 40;
-        }
-        helper.search();
-      },
-    });
     // set user token manually
     // getUserIP(function (ip) {
     //   alert("Got IP! :" + ip);
