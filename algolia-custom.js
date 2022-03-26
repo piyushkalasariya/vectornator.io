@@ -152,7 +152,7 @@ const getSearchList = (data) => {
           const HEADING = getHeading({ hit });
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
           return `
-            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block">
+            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${bindEvent('click', hit, 'Search Result Clicked')}>
               <div class="st-name">${HEADING}</div>
               <div class="st-text one-line">
                 ${instantsearch.highlight({
@@ -554,9 +554,23 @@ if (!isFAQ) {
     const insightsMiddleware =
       instantsearch.middlewares.createInsightsMiddleware({
         insightsClient: window.aa,
+        insightsInitParams: {
+          useCookie: true,
+        },
+        // onEvent: (event, aa) => {
+        //   const { insightsMethod, payload, widgetType, eventType } = event;
+      
+        //   // Send the event to Algolia
+        //   aa(insightsMethod, payload);
+      
+        //   // Send the event to a third-party tracker
+        //   if (widgetType === 'ais.hits' && eventType === 'click') {
+        //     thirdPartyTracker.send('Product Clicked', payload);
+        //   }
+        // }
       });
     search.use(insightsMiddleware);
-    window.aa('setUserToken', 'piyushkalsariya');
+    window.aa("setUserToken", "piyushkalsariya");
     search.start();
     document.querySelector(".ais-SearchBox").prepend(searchInputIcon);
     document.querySelector(".ais-SearchBox").append(resetIcon);
