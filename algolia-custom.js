@@ -493,7 +493,7 @@ if (!isFAQ) {
     });
     aa("init", {
       appId,
-      analyticsApiKye,
+      apiKey: analyticsApiKye,
       useCookie: true,
     });
     const insightsMiddleware =
