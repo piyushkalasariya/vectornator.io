@@ -1,5 +1,12 @@
 var ALGOLIA_INSIGHTS_SRC = "https://cdn.jsdelivr.net/npm/search-insights@2.0.3";
 
+const isFAQ = window.location.pathname.includes("/faq");
+const isSearching = window.location.pathname.includes("/searching");
+const isHelpCenter = window.location.pathname.includes("/help-center");
+const colorClass = isFAQ ? "is-dark" : "is-light";
+const appId = "3IX4R6F9TD";
+const apiKey = "4490249ded50f765cb1b2668f1a26519";
+
 !(function (e, a, t, n, s, i, c) {
   (e.AlgoliaAnalyticsObject = s),
     (e[s] =
@@ -63,11 +70,6 @@ function getUserIP(onNewIP) {
     ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
   };
 }
-
-const isFAQ = window.location.pathname.includes("/faq");
-const isSearching = window.location.pathname.includes("/searching");
-const isHelpCenter = window.location.pathname.includes("/help-center");
-const colorClass = isFAQ ? "is-dark" : "is-light";
 
 const getHeading = (data) => {
   const { hit } = data;
@@ -185,10 +187,7 @@ if (!isFAQ) {
     noResults.innerHTML = noResInner;
     // console.log(noResults);
     let query, arrLength;
-    const searchClient = algoliasearch(
-      "3IX4R6F9TD",
-      "4490249ded50f765cb1b2668f1a26519"
-    );
+    const searchClient = algoliasearch(appId, apiKey);
     // const index = instantsearch.widgets.index({
     //   indexName: "test_GLOBAL_SEARCH",
     //   attributesToSnippet: ["text:100"],
@@ -341,10 +340,7 @@ if (!isFAQ) {
   } else if (isHelpCenter) {
     const searchTips = document.createElement("div");
     (searchTips.className = "search-tips"), (searchTips.style.display = "none");
-    const searchClient = algoliasearch(
-        "3IX4R6F9TD",
-        "4490249ded50f765cb1b2668f1a26519"
-      ),
+    const searchClient = algoliasearch(appId, apiKey),
       search = instantsearch({
         indexName: "test_GLOBAL_SEARCH",
         searchClient: searchClient,
@@ -477,10 +473,7 @@ if (!isFAQ) {
   } else {
     const searchTips = document.querySelector(".search-tips");
     if (searchTips) searchTips.style.display = "none";
-    const searchClient = algoliasearch(
-      "3IX4R6F9TD",
-      "4490249ded50f765cb1b2668f1a26519"
-    );
+    const searchClient = algoliasearch(appId, apiKey);
     const search = instantsearch({
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
@@ -497,12 +490,16 @@ if (!isFAQ) {
         helper.search();
       },
     });
+    aa("init", {
+      appId,
+      apiKey,
+      useCookie: true,
+    });
     const insightsMiddleware =
       instantsearch.middlewares.createInsightsMiddleware({
         insightsClient: window.aa,
       });
     search.use(insightsMiddleware);
-    
     // set user token manually
     // getUserIP(function (ip) {
     //   alert("Got IP! :" + ip);
