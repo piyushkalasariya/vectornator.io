@@ -108,8 +108,7 @@ const getHeading = (data) => {
 
 const getSearchList = (data) => {
   if (!data) return "";
-  console.log("");
-  const { groupedByCategorie } = data;
+  const { groupedByCategorie, bindEvent } = data;
   return `
   ${
     groupedByCategorie.length > 0
@@ -360,10 +359,10 @@ if (!isFAQ) {
     }
     const renderHits = (e, t) => {
         console.log('renderHits-', {e,t})
-        const { hits: s, widgetParams: r } = e;
+        const { hits: s, widgetParams: r, bindEvent } = e;
         if (null == e.results) return;
         const n = distinctResults(s, "categorie");
-        r.container.innerHTML = getSearchList({ groupedByCategorie: n });
+        r.container.innerHTML = getSearchList({ groupedByCategorie: n, bindEvent });
       },
       customHits = instantsearch.connectors.connectHitsWithInsights(renderHits);
     search.addWidgets([
@@ -524,12 +523,12 @@ if (!isFAQ) {
     }
     // Create the render function
     const renderHits = (renderOptions, isFirstRender) => {
-      const { hits, widgetParams } = renderOptions;
+      const { hits, widgetParams, bindEvent } = renderOptions;
       if (renderOptions.results == undefined) {
         return;
       }
       const groupedByCategorie = distinctResults(hits, "categorie");
-      widgetParams.container.innerHTML = getSearchList({ groupedByCategorie });
+      widgetParams.container.innerHTML = getSearchList({ groupedByCategorie, bindEvent });
     };
     const customHits =
       instantsearch.connectors.connectHitsWithInsights(renderHits);
