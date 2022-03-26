@@ -6,7 +6,14 @@ const appId = "3IX4R6F9TD";
 const apiKey = "4490249ded50f765cb1b2668f1a26519";
 const analyticsApiKye = "d4259a9011b8ecac7019fcdd1f7d2f84";
 const analyticsHeaders = {
-  headers: { "X-Forwarded-For": "163.53.179.1" },
+  headers: {
+    // "X-Forwarded-For": "163.53.179.1",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+    // "Access-Control-Allow-Headers": "163.53.179.1",
+    // "Access-Control-Request-Headers": "163.53.179.1",
+  },
 };
 
 function getUserIP(onNewIP) {
@@ -483,7 +490,7 @@ if (!isFAQ) {
           helper.state.hitsPerPage = 40;
         }
         helper.state.clickAnalytics = true;
-        helper.state.analytics= true;
+        helper.state.analytics = true;
         helper.search();
       },
     });
