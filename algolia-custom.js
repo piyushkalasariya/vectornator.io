@@ -491,17 +491,6 @@ if (!isFAQ) {
         helper.search();
       },
     });
-    aa("init", {
-      appId,
-      apiKey: analyticsApiKye,
-      useCookie: true,
-    });
-    aa('setUserToken', 'piyush');
-    const insightsMiddleware =
-      instantsearch.middlewares.createInsightsMiddleware({
-        insightsClient: window.aa,
-      });
-    search.use(insightsMiddleware);
     // set user token manually
     // getUserIP(function (ip) {
     //   alert("Got IP! :" + ip);
@@ -557,6 +546,17 @@ if (!isFAQ) {
     let searchInputIcon = document.querySelectorAll(".sn-search-box .svg")[0];
     let resetIcon = document.querySelectorAll(".sn-search-box .svg")[1];
     resetIcon.classList.add("reset");
+    window.aa("init", {
+      appId,
+      apiKey: analyticsApiKye,
+      useCookie: true,
+    });
+    const insightsMiddleware =
+      instantsearch.middlewares.createInsightsMiddleware({
+        insightsClient: window.aa,
+      });
+    search.use(insightsMiddleware);
+    window.aa('setUserToken', 'piyushkalsariya');
     search.start();
     document.querySelector(".ais-SearchBox").prepend(searchInputIcon);
     document.querySelector(".ais-SearchBox").append(resetIcon);
