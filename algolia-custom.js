@@ -5,6 +5,8 @@ const colorClass = isFAQ ? "is-dark" : "is-light";
 const appId = "3IX4R6F9TD";
 const apiKey = "4490249ded50f765cb1b2668f1a26519";
 const analyticsApiKye = "d4259a9011b8ecac7019fcdd1f7d2f84";
+let timerId;
+
 const analyticsHeaders = {
   headers: {
     // "X-Forwarded-For": "163.53.179.1",
@@ -481,6 +483,7 @@ if (!isFAQ) {
       searchClient,
       appId, // temp
       apiKey, // temp
+      debounce: 500,
       searchParameters: {
         clickAnalytics: true, // <- adding clickAnalytics true enables queryID
         enablePersonalization: true, // To enable personalization, the search parameter enablePersonalization must be set to true.
@@ -533,16 +536,16 @@ if (!isFAQ) {
     //   alert("Got IP! :" + ip);
     //   aa('setUserToken', ip)
     // });
-    search.once("render", () => {
-      window.aa("initSearch", {
-        getQueryID: () => {
-          return (
-            search.helper.lastResults &&
-            search.helper.lastResults._rawResults[0].queryID
-          );
-        }
-      });
-    });
+    // search.once("render", () => {
+    //   window.aa("initSearch", {
+    //     getQueryID: () => {
+    //       return (
+    //         search.helper.lastResults &&
+    //         search.helper.lastResults._rawResults[0].queryID
+    //       );
+    //     }
+    //   });
+    // });
 
 
     // Group results by distinct attribute (year) function
@@ -591,6 +594,10 @@ if (!isFAQ) {
           form: ["sn-search-field", "w-form"],
           input: ["sn-search-input", "w-input", "searchfocus"],
           submit: ["search-button", "w-button"],
+        },
+        queryHook(query, refine) {
+          clearTimeout(timerId)
+          timerId = setTimeout(() => refine(query), 500)
         },
       })
     );
@@ -667,6 +674,25 @@ if (!isFAQ) {
       });
   }
 }
+
+// Returns a function, that, as long as it continues to be invoked, will not
+// be triggered. The function will be called after it stops being called for
+// N milliseconds. If `immediate` is passed, trigger the function on the
+// leading edge, instead of the trailing.
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
 
 /*
 
