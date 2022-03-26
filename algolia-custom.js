@@ -496,6 +496,7 @@ if (!isFAQ) {
       apiKey: analyticsApiKye,
       useCookie: true,
     });
+    aa('setUserToken', 'piyush');
     const insightsMiddleware =
       instantsearch.middlewares.createInsightsMiddleware({
         insightsClient: window.aa,
