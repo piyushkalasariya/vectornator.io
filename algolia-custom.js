@@ -6,7 +6,7 @@ const isHelpCenter = window.location.pathname.includes("/help-center");
 const colorClass = isFAQ ? "is-dark" : "is-light";
 const appId = "3IX4R6F9TD";
 const apiKey = "4490249ded50f765cb1b2668f1a26519";
-const analyticsApiKye = "3573f5c7d1f3ac07abe84c70b3dd0961";
+const analyticsApiKye = "d4259a9011b8ecac7019fcdd1f7d2f84";
 
 !(function (e, a, t, n, s, i, c) {
   (e.AlgoliaAnalyticsObject = s),
