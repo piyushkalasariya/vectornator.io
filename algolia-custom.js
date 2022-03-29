@@ -507,7 +507,7 @@ if (!isFAQ) {
     // analytics start
     window.aa("init", {
       appId,
-      apiKey: analyticsApiKye,
+      apiKey: apiKey,
       useCookie: true,
     });
     const insightsMiddleware =
