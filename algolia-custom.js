@@ -144,7 +144,7 @@ const getSearchList = (data) => {
           <div class="subtitle-s">${item.categorie}</div>
         </div>
       ${sortHits
-        .map((hit, bindEvent) => {
+        .map((hit) => {
           const HEADING = getHeading({ hit });
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
           return `
