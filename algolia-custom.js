@@ -511,26 +511,34 @@ if (!isFAQ) {
     //   apiKey: apiKey,
     //   useCookie: true,
     // });
-    const insightsMiddleware =
-      instantsearch.middlewares.createInsightsMiddleware({
-        insightsClient: window.aa,
-        // insightsInitParams: {
-        //   useCookie: true,
-        // },
-        // onEvent: (event, aa) => {
-        //   const { insightsMethod, payload, widgetType, eventType } = event;
+//     const insightsMiddleware =
+//       instantsearch.middlewares.createInsightsMiddleware({
+//         insightsClient: window.aa,
+//         // insightsInitParams: {
+//         //   useCookie: true,
+//         // },
+//         // onEvent: (event, aa) => {
+//         //   const { insightsMethod, payload, widgetType, eventType } = event;
 
-        //   // Send the event to Algolia
-        //   aa(insightsMethod, payload);
+//         //   // Send the event to Algolia
+//         //   aa(insightsMethod, payload);
 
-        //   // Send the event to a third-party tracker
-        //   if (widgetType === 'ais.hits' && eventType === 'click') {
-        //     thirdPartyTracker.send('Product Clicked', payload);
-        //   }
-        // }
-      });
-    search.use(insightsMiddleware);
-    window.aa("setUserToken", "piyushkalsariya");
+//         //   // Send the event to a third-party tracker
+//         //   if (widgetType === 'ais.hits' && eventType === 'click') {
+//         //     thirdPartyTracker.send('Product Clicked', payload);
+//         //   }
+//         // }
+//       });
+//     search.use(insightsMiddleware);
+	  
+	search.use(
+	  instantsearch.middlewares.createInsightsMiddleware({
+	    insightsClient: window.aa,
+	  })
+	);
+
+    window.aa('setUserToken', 'other-token');
+
     console.log('window-', window);
     // analytics end
     // set user token manually
