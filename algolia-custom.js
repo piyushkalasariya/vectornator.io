@@ -509,14 +509,14 @@ if (!isFAQ) {
     window.aa("init", {
       appId,
       apiKey: apiKey,
-      useCookie: true,
+      // useCookie: true,
     });
     const insightsMiddleware =
       instantsearch.middlewares.createInsightsMiddleware({
         insightsClient: window.aa,
-        insightsInitParams: {
-          useCookie: true,
-        },
+        // insightsInitParams: {
+        //   useCookie: true,
+        // },
         // onEvent: (event, aa) => {
         //   const { insightsMethod, payload, widgetType, eventType } = event;
 
