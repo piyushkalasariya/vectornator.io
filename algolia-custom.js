@@ -148,7 +148,7 @@ const getSearchList = (data) => {
           const HEADING = getHeading({ hit });
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
           return `
-            <a class="st-link ${colorClass} w-inline-block" ${bindEvent(
+            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${bindEvent(
             "click",
             hit,
             "Search Result Clicked"
