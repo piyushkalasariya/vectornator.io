@@ -3,7 +3,8 @@ const isSearching = window.location.pathname.includes("/searching");
 const isHelpCenter = window.location.pathname.includes("/help-center");
 const colorClass = isFAQ ? "is-dark" : "is-light";
 const appId = "3IX4R6F9TD";
-const apiKey = "4490249ded50f765cb1b2668f1a26519";
+// const apiKey = "4490249ded50f765cb1b2668f1a26519";
+const apiKey = "d4259a9011b8ecac7019fcdd1f7d2f84";
 const analyticsApiKye = "d4259a9011b8ecac7019fcdd1f7d2f84";
 let timerId;
 
