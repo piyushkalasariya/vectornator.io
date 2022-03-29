@@ -530,6 +530,7 @@ if (!isFAQ) {
       });
     search.use(insightsMiddleware);
     window.aa("setUserToken", "piyushkalsariya");
+    console.log('window-', window);
     // analytics end
     // set user token manually
     // getUserIP(function (ip) {
