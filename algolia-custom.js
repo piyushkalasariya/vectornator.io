@@ -506,11 +506,11 @@ if (!isFAQ) {
       },
     });
     // analytics start
-    window.aa("init", {
-      appId,
-      apiKey: apiKey,
-      // useCookie: true,
-    });
+    // window.aa("init", {
+    //   appId,
+    //   apiKey: apiKey,
+    //   useCookie: true,
+    // });
     const insightsMiddleware =
       instantsearch.middlewares.createInsightsMiddleware({
         insightsClient: window.aa,
