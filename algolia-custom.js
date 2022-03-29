@@ -537,16 +537,16 @@ if (!isFAQ) {
     //   alert("Got IP! :" + ip);
     //   aa('setUserToken', ip)
     // });
-    search.once("render", () => {
-      window.aa("initSearch", {
-        getQueryID: () => {
-          return (
-            search.helper.lastResults &&
-            search.helper.lastResults._rawResults[0].queryID
-          );
-        }
-      });
-    });
+    // search.once("render", () => {
+    //   window.aa("initSearch", {
+    //     getQueryID: () => {
+    //       return (
+    //         search.helper.lastResults &&
+    //         search.helper.lastResults._rawResults[0].queryID
+    //       );
+    //     }
+    //   });
+    // });
 
 
     // Group results by distinct attribute (year) function
