@@ -478,7 +478,7 @@ if (!isFAQ) {
   } else {
     const searchTips = document.querySelector(".search-tips");
     if (searchTips) searchTips.style.display = "none";
-    const searchClient = algoliasearch(appId, apiKey, analyticsHeaders);
+    const searchClient = algoliasearch(appId, apiKey);
     const search = instantsearch({
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
