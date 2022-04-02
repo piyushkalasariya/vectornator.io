@@ -19,6 +19,16 @@ const analyticsHeaders = {
   }
 };
 
+let userToken;
+
+aa("getUserToken", null, (err, newUserToken) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  userToken = newUserToken;
+});
+
 function getUserIP(onNewIP) {
   //  onNewIp - your listener function for new IPs
   //compatibility for firefox and chrome
@@ -423,7 +433,7 @@ if (!isFAQ) {
                     eventType: "click",
                     eventName: "Clicked Clicked",
                     index: "test_GLOBAL_SEARCH",
-                    userToken: "user-123456",
+                    userToken: userToken,
                     timestamp: new Date().getTime(),
                     objectIDs: [`${hit.objectID}`],
                     queryID: hit.__queryID,
@@ -609,9 +619,9 @@ if (!isFAQ) {
               events: [
                 {
                   eventType: "click",
-                  eventName: "Clicked Clicked",
+                  eventName: "Clicked",
                   index: "test_GLOBAL_SEARCH",
-                  userToken: "user-123456",
+                  userToken: userToken,
                   timestamp: new Date().getTime(),
                   objectIDs: [`${hit.objectID}`],
                   queryID: hit.__queryID,
