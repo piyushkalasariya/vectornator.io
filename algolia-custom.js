@@ -148,14 +148,8 @@ const getSearchList = (data) => {
           const HEADING = getHeading({ hit });
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
 
-          console.log("Click To Send", clickToSend);
-
           return `
-            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${clickToSend(
-            "click",
-            hit,
-            "Search Result Clicked"
-          )}>
+            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block">
               <div class="st-name">${HEADING}</div>
               <div class="st-text one-line">
                 ${instantsearch.highlight({
@@ -165,6 +159,9 @@ const getSearchList = (data) => {
                 })}
               </div>
             </a>
+            <button ${clickToSend("click", hit, "my-click-event")}>
+                Click event
+            </button>
           `;
         })
         .join("")}
