@@ -25,11 +25,10 @@ const analyticsHeaders = {
   load JSON-encoded data from the server using a
   GET HTTP request */
 
-$.getJSON("https://api.ipify.org?format=json", function (data) {
-  console.log("user-data-ip-", { data, ip: data.ip });
-  // Setting text of element P with id gfg
-  // $("#gfg").html(data.ip);
-});
+// Setting text of element P with id gfg
+// $.getJSON("https://api.ipify.org?format=json", function (data) {
+//   console.log("user-data-ip-", { data, ip: data.ip });
+// });
 
 let userToken;
 
@@ -38,6 +37,7 @@ aa("getUserToken", null, (err, newUserToken) => {
     console.error(err);
     return;
   }
+  console.log("userToken-", newUserToken);
   userToken = newUserToken;
 });
 
