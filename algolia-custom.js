@@ -126,6 +126,8 @@ const getSearchList = (data) => {
       ? `
   ${groupedByCategorie
     .map((item) => {
+      console.log(item);
+
       const newHits = item.hits.slice(0, 5);
       const matchCount = [];
       const sortHits = [];
