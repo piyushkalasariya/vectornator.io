@@ -149,7 +149,11 @@ const getSearchList = (data) => {
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
 
           return `
-            <div class="st-link ${colorClass} w-inline-block">
+            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${clickToSend(
+            "click",
+            hit,
+            "Search Result Clicked"
+          )}>
               <div class="st-name">${HEADING}</div>
               <div class="st-text one-line">
                 ${instantsearch.highlight({
@@ -158,10 +162,7 @@ const getSearchList = (data) => {
                   highlightedTagName: "strong"
                 })}
               </div>
-              <button ${clickToSend("click", hit, "my-click-event")}>
-                Click event
-              </button>
-            </div>
+            </a>
           `;
         })
         .join("")}
