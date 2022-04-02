@@ -119,7 +119,7 @@ const getHeading = (data) => {
 
 const getSearchList = (data) => {
   if (!data) return "";
-  const { groupedByCategorie, bindEvent } = data;
+  const { groupedByCategorie, bindEvent: clickToSend } = data;
   return `
   ${
     groupedByCategorie.length > 0
@@ -147,8 +147,11 @@ const getSearchList = (data) => {
         .map((hit) => {
           const HEADING = getHeading({ hit });
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
+
+          console.log("Click To Send", clickToSend);
+
           return `
-            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${bindEvent(
+            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${clickToSend(
             "click",
             hit,
             "Search Result Clicked"
@@ -506,30 +509,6 @@ if (!isFAQ) {
       }
     });
     // analytics start
-    // window.aa("init", {
-    //   appId,
-    //   apiKey: apiKey,
-    //   useCookie: true,
-    // });
-    //     const insightsMiddleware =
-    //       instantsearch.middlewares.createInsightsMiddleware({
-    //         insightsClient: window.aa,
-    //         // insightsInitParams: {
-    //         //   useCookie: true,
-    //         // },
-    //         // onEvent: (event, aa) => {
-    //         //   const { insightsMethod, payload, widgetType, eventType } = event;
-
-    //         //   // Send the event to Algolia
-    //         //   aa(insightsMethod, payload);
-
-    //         //   // Send the event to a third-party tracker
-    //         //   if (widgetType === 'ais.hits' && eventType === 'click') {
-    //         //     thirdPartyTracker.send('Product Clicked', payload);
-    //         //   }
-    //         // }
-    //       });
-    //     search.use(insightsMiddleware);
 
     search.use(
       instantsearch.middlewares.createInsightsMiddleware({
@@ -540,22 +519,6 @@ if (!isFAQ) {
     window.aa("setUserToken", "other-token");
 
     console.log("window-", window);
-    // analytics end
-    // set user token manually
-    // getUserIP(function (ip) {
-    //   alert("Got IP! :" + ip);
-    //   aa('setUserToken', ip)
-    // });
-    // search.once("render", () => {
-    //   window.aa("initSearch", {
-    //     getQueryID: () => {
-    //       return (
-    //         search.helper.lastResults &&
-    //         search.helper.lastResults._rawResults[0].queryID
-    //       );
-    //     }
-    //   });
-    // });
 
     // Group results by distinct attribute (year) function
     function distinctResults(results, attributeForDistinct) {
