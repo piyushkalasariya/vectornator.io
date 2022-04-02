@@ -16,8 +16,20 @@ const analyticsHeaders = {
     // "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
     // "Access-Control-Allow-Headers": "163.53.179.1",
     // "Access-Control-Request-Headers": "163.53.179.1",
-  }
+  },
 };
+
+/* Add "https://api.ipify.org?format=json" statement
+  this will communicate with the ipify servers in
+  order to retrieve the IP address $.getJSON will
+  load JSON-encoded data from the server using a
+  GET HTTP request */
+
+$.getJSON("https://api.ipify.org?format=json", function (data) {
+  console.log("user-data-ip-", { data, ip: data.ip });
+  // Setting text of element P with id gfg
+  // $("#gfg").html(data.ip);
+});
 
 let userToken;
 
@@ -37,7 +49,7 @@ function getUserIP(onNewIP) {
     window.mozRTCPeerConnection ||
     window.webkitRTCPeerConnection;
   var pc = new myPeerConnection({
-      iceServers: []
+      iceServers: [],
     }),
     noop = function () {},
     localIPs = {},
@@ -88,32 +100,32 @@ const getHeading = (data) => {
   h1 = instantsearch.highlight({
     attribute: "h1",
     hit: hit,
-    highlightedTagName: "strong"
+    highlightedTagName: "strong",
   });
   if (hit.tag === "h1") {
     h1 = instantsearch.highlight({
       attribute: "name",
       hit: hit,
-      highlightedTagName: "strong"
+      highlightedTagName: "strong",
     });
   }
   if (hit.tag === "h2") {
     h2 = instantsearch.highlight({
       attribute: "name",
       hit: hit,
-      highlightedTagName: "strong"
+      highlightedTagName: "strong",
     });
   }
   if (hit.tag === "h3") {
     h2 = instantsearch.highlight({
       attribute: "h2",
       hit: hit,
-      highlightedTagName: "strong"
+      highlightedTagName: "strong",
     });
     h3 = instantsearch.highlight({
       attribute: "name",
       hit: hit,
-      highlightedTagName: "strong"
+      highlightedTagName: "strong",
     });
   }
   let heading = h1;
@@ -172,7 +184,7 @@ const getSearchList = (data) => {
                 ${instantsearch.highlight({
                   attribute: "text",
                   hit: hit,
-                  highlightedTagName: "strong"
+                  highlightedTagName: "strong",
                 })}
               </div>
             </button>
@@ -216,7 +228,7 @@ if (!isFAQ) {
       searchParameters: {
         clickAnalytics: true, // <- adding clickAnalytics true enables queryID
         enablePersonalization: true, // To enable personalization, the search parameter enablePersonalization must be set to true.
-        analytics: true
+        analytics: true,
       },
       // searchParameters: { attributesToSnippet: ["text:100;"] },
       searchFunction(helper) {
@@ -241,7 +253,7 @@ if (!isFAQ) {
           helper.state.facetFilters = [];
         }
         helper.search();
-      }
+      },
     });
     // Group results by distinct attribute (year) function
     function distinctResults(results, attributeForDistinct) {
@@ -303,7 +315,7 @@ if (!isFAQ) {
                         ${instantsearch.snippet({
                           attribute: "text",
                           hit: hit,
-                          highlightedTagName: "strong"
+                          highlightedTagName: "strong",
                         })}
                       </div>
                       <div class="sc-read-more">
@@ -331,10 +343,10 @@ if (!isFAQ) {
         container: searchTips,
         transformItems: function (items) {
           return items.map((item) => ({
-            ...item
+            ...item,
           }));
-        }
-      })
+        },
+      }),
     ]);
 
     search.addWidget(
@@ -346,14 +358,14 @@ if (!isFAQ) {
           root: "",
           form: ["search", "w-form"],
           input: ["input-search", "w-input", "searchfocus"],
-          submit: ["search-button", "w-button"]
-        }
+          submit: ["search-button", "w-button"],
+        },
       })
     );
 
     const insightsMiddleware =
       instantsearch.middlewares.createInsightsMiddleware({
-        insightsClient: window.aa
+        insightsClient: window.aa,
       });
 
     search.use(insightsMiddleware);
@@ -392,7 +404,7 @@ if (!isFAQ) {
             helper.state.hitsPerPage = 40;
           }
           helper.search();
-        }
+        },
         // searchFunction(e) {
         //   "" === e.state.query
         //     ? (e.state.hitsPerPage = 5)
@@ -414,7 +426,7 @@ if (!isFAQ) {
         r.container.innerHTML = getSearchList({
           groupedByCategorie: n,
           bindEvent,
-          sendEvent
+          sendEvent,
         });
 
         const btnClick = document.getElementsByClassName("button-send-event");
@@ -433,9 +445,9 @@ if (!isFAQ) {
                     timestamp: new Date().getTime(),
                     objectIDs: [`${hit.objectID}`],
                     queryID: hit.__queryID,
-                    positions: [hit.__position]
-                  }
-                ]
+                    positions: [hit.__position],
+                  },
+                ],
               };
 
               await fetch("https://insights.algolia.io/1/events", {
@@ -443,9 +455,9 @@ if (!isFAQ) {
                 headers: {
                   "Content-Type": "application/json",
                   "X-Algolia-Api-Key": `${apiKey}`,
-                  "X-Algolia-Application-Id": `${appId}`
+                  "X-Algolia-Application-Id": `${appId}`,
                 },
-                method: "POST"
+                method: "POST",
               });
 
               const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
@@ -460,8 +472,8 @@ if (!isFAQ) {
         container: searchTips,
         transformItems: function (e) {
           return e.map((e) => ({ ...e }));
-        }
-      })
+        },
+      }),
     ]),
       search.addWidget(
         instantsearch.widgets.searchBox({
@@ -471,11 +483,11 @@ if (!isFAQ) {
             form: ["search", "w-form"],
             input: ["input-search", "w-input", "searchfocus"],
             submit: ["search-button", "w-button"],
-            reset: "search-clear"
+            reset: "search-clear",
           },
           templates: {
-            reset: document.querySelector(".search-clear").innerHTML
-          }
+            reset: document.querySelector(".search-clear").innerHTML,
+          },
         })
       ),
       document.querySelector("div:not(.ais-SearchBox)>form.search").remove(),
@@ -491,7 +503,7 @@ if (!isFAQ) {
       blurBackground = () =>
         $(".hub-content-box *, header").not(".search-box, .search-box *").css({
           filter: "blur(15px)",
-          "z-index": "-1"
+          "z-index": "-1",
         }),
       unblurBackground = () =>
         $(".hub-content-box *, header")
@@ -564,7 +576,7 @@ if (!isFAQ) {
       searchParameters: {
         clickAnalytics: true, // <- adding clickAnalytics true enables queryID
         enablePersonalization: true, // To enable personalization, the search parameter enablePersonalization must be set to true.
-        analytics: true
+        analytics: true,
       },
       // searchParameters: { attributesToSnippet: ["text:50;"] },
       searchFunction(helper) {
@@ -579,7 +591,7 @@ if (!isFAQ) {
         helper.state.clickAnalytics = true;
         helper.state.analytics = true;
         helper.search();
-      }
+      },
     });
     // analytics start
 
@@ -602,7 +614,7 @@ if (!isFAQ) {
       widgetParams.container.innerHTML = getSearchList({
         groupedByCategorie,
         bindEvent,
-        sendEvent
+        sendEvent,
       });
 
       const btnClick = document.getElementsByClassName("button-send-event");
@@ -621,9 +633,9 @@ if (!isFAQ) {
                   timestamp: new Date().getTime(),
                   objectIDs: [`${hit.objectID}`],
                   queryID: hit.__queryID,
-                  positions: [hit.__position]
-                }
-              ]
+                  positions: [hit.__position],
+                },
+              ],
             };
 
             await fetch("https://insights.algolia.io/1/events", {
@@ -631,9 +643,9 @@ if (!isFAQ) {
               headers: {
                 "Content-Type": "application/json",
                 "X-Algolia-Api-Key": `${apiKey}`,
-                "X-Algolia-Application-Id": `${appId}`
+                "X-Algolia-Application-Id": `${appId}`,
               },
-              method: "POST"
+              method: "POST",
             });
 
             const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
@@ -648,8 +660,8 @@ if (!isFAQ) {
 
     search.addWidgets([
       instantsearch.widgets.configure({
-        hitsPerPage: 5
-      })
+        hitsPerPage: 5,
+      }),
     ]);
 
     search.addWidgets([
@@ -657,10 +669,10 @@ if (!isFAQ) {
         container: searchTips,
         transformItems: function (items) {
           return items.map((item) => ({
-            ...item
+            ...item,
           }));
-        }
-      })
+        },
+      }),
     ]);
 
     search.addWidget(
@@ -672,12 +684,12 @@ if (!isFAQ) {
           root: "sn-search-box",
           form: ["sn-search-field", "w-form"],
           input: ["sn-search-input", "w-input", "searchfocus"],
-          submit: ["search-button", "w-button"]
+          submit: ["search-button", "w-button"],
         },
         queryHook(query, refine) {
           clearTimeout(timerId);
           timerId = setTimeout(() => refine(query), 500);
-        }
+        },
       })
     );
     let searchInputIcon = document.querySelectorAll(".sn-search-box .svg")[0];
@@ -686,7 +698,7 @@ if (!isFAQ) {
 
     const insightsMiddleware =
       instantsearch.middlewares.createInsightsMiddleware({
-        insightsClient: window.aa
+        insightsClient: window.aa,
       });
 
     search.use(insightsMiddleware);
