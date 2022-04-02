@@ -193,10 +193,6 @@ const getSearchList = (data) => {
   }`;
 };
 
-console.log("FAQ", isFAQ);
-console.log("SEARCHING", isSearching);
-console.log("isHelpCenter", isHelpCenter);
-
 if (!isFAQ) {
   if (isSearching) {
     $("form.search").remove();
