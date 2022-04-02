@@ -3,8 +3,8 @@ const isSearching = window.location.pathname.includes("/searching");
 const isHelpCenter = window.location.pathname.includes("/help-center");
 const colorClass = isFAQ ? "is-dark" : "is-light";
 const appId = "3IX4R6F9TD";
-// const apiKey = "4490249ded50f765cb1b2668f1a26519";
-const apiKey = "d4259a9011b8ecac7019fcdd1f7d2f84";
+const apiKey = "4490249ded50f765cb1b2668f1a26519";
+// const apiKey = "d4259a9011b8ecac7019fcdd1f7d2f84";
 const analyticsApiKye = "d4259a9011b8ecac7019fcdd1f7d2f84";
 let timerId;
 
@@ -119,15 +119,14 @@ const getHeading = (data) => {
 
 const getSearchList = (data) => {
   if (!data) return "";
-  const { groupedByCategorie, bindEvent: clickToSend } = data;
+  const { groupedByCategorie, bindEvent, sendEvent } = data;
+
   return `
   ${
     groupedByCategorie.length > 0
       ? `
   ${groupedByCategorie
     .map((item) => {
-      console.log(item);
-
       const newHits = item.hits.slice(0, 5);
       const matchCount = [];
       const sortHits = [];
@@ -150,12 +149,14 @@ const getSearchList = (data) => {
           const HEADING = getHeading({ hit });
           const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
 
-          return `
-            <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${clickToSend(
-            "click",
-            hit,
-            "Search Result Clicked"
-          )}>
+          //   <a href="${SEARCH_LINK}" class="st-link ${colorClass} w-inline-block" ${clickToSend(
+          //   "click",
+          //   hit,
+          //   "Search Result Clicked"
+          // )}></a>
+
+          const record = `
+            <button style="text-align:left" class="button-send-event button-analytics st-link ${colorClass} w-inline-block">
               <div class="st-name">${HEADING}</div>
               <div class="st-text one-line">
                 ${instantsearch.highlight({
@@ -164,8 +165,10 @@ const getSearchList = (data) => {
                   highlightedTagName: "strong"
                 })}
               </div>
-            </a>
+            </button>
           `;
+
+          return record;
         })
         .join("")}
       </div>`;
@@ -179,6 +182,10 @@ const getSearchList = (data) => {
         </div>`
   }`;
 };
+
+console.log("FAQ", isFAQ);
+console.log("SEARCHING", isSearching);
+console.log("isHelpCenter", isHelpCenter);
 
 if (!isFAQ) {
   if (isSearching) {
@@ -200,6 +207,11 @@ if (!isFAQ) {
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
       routing: true,
+      searchParameters: {
+        clickAnalytics: true, // <- adding clickAnalytics true enables queryID
+        enablePersonalization: true, // To enable personalization, the search parameter enablePersonalization must be set to true.
+        analytics: true
+      },
       // searchParameters: { attributesToSnippet: ["text:100;"] },
       searchFunction(helper) {
         query = helper.state.query;
@@ -234,7 +246,8 @@ if (!isFAQ) {
     }
     // Create the render function
     const renderHits = (renderOptions, isFirstRender) => {
-      const { hits, widgetParams } = renderOptions;
+      const { hits, widgetParams, bindEvent } = renderOptions;
+
       // If no results
       if (renderOptions.results == undefined) {
         return;
@@ -274,7 +287,11 @@ if (!isFAQ) {
                   const HEADING = getHeading({ hit });
                   // let link = hit.slug;
                   return `
-                    <a href="${SEARCH_LINK}" class="sc-card w-inline-block">
+                    <a href="${SEARCH_LINK}" ${bindEvent(
+                    "click",
+                    hits[0],
+                    "Search Result Clicked"
+                  )} class="sc-card w-inline-block">
                       <h4 class="alt-h4 is-black no-margins">${HEADING}</h4>
                       <div class="text-body-2 one-line">
                         ${instantsearch.snippet({
@@ -302,6 +319,7 @@ if (!isFAQ) {
     };
     const customHits =
       instantsearch.connectors.connectHitsWithInsights(renderHits);
+
     search.addWidgets([
       customHits({
         container: searchTips,
@@ -312,6 +330,7 @@ if (!isFAQ) {
         }
       })
     ]);
+
     search.addWidget(
       instantsearch.widgets.searchBox({
         container: ".searching-search-box",
@@ -325,7 +344,16 @@ if (!isFAQ) {
         }
       })
     );
+
+    const insightsMiddleware =
+      instantsearch.middlewares.createInsightsMiddleware({
+        insightsClient: window.aa
+      });
+
+    search.use(insightsMiddleware);
+
     search.start();
+
     // .ais-SearchBox-reset
     const inputSearch = document.querySelector(".searchfocus");
     if (inputSearch.value) $(".ais-SearchBox-reset").css("display", "block");
@@ -373,13 +401,52 @@ if (!isFAQ) {
     }
     const renderHits = (e, t) => {
         console.log("renderHits-", { e, t });
-        const { hits: s, widgetParams: r, bindEvent } = e;
+        const { hits: s, widgetParams: r, bindEvent, sendEvent } = e;
         if (null == e.results) return;
         const n = distinctResults(s, "categorie");
+
         r.container.innerHTML = getSearchList({
           groupedByCategorie: n,
-          bindEvent
+          bindEvent,
+          sendEvent
         });
+
+        const btnClick = document.getElementsByClassName("button-send-event");
+
+        if (btnClick.length > 0) {
+          for (let i = 0; i < btnClick.length; i++) {
+            btnClick[i].addEventListener("click", async () => {
+              const hit = hits[i];
+              const event = {
+                events: [
+                  {
+                    eventType: "click",
+                    eventName: "Clicked Clicked",
+                    index: "test_GLOBAL_SEARCH",
+                    userToken: "user-123456",
+                    timestamp: new Date().getTime(),
+                    objectIDs: [`${hit.objectID}`],
+                    queryID: hit.__queryID,
+                    positions: [hit.__position]
+                  }
+                ]
+              };
+
+              await fetch("https://insights.algolia.io/1/events", {
+                body: `${JSON.stringify(event)}`,
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Algolia-Api-Key": `${apiKey}`,
+                  "X-Algolia-Application-Id": `${appId}`
+                },
+                method: "POST"
+              });
+
+              const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
+              window.location = SEARCH_LINK;
+            });
+          }
+        }
       },
       customHits = instantsearch.connectors.connectHitsWithInsights(renderHits);
     search.addWidgets([
@@ -510,16 +577,6 @@ if (!isFAQ) {
     });
     // analytics start
 
-    search.use(
-      instantsearch.middlewares.createInsightsMiddleware({
-        insightsClient: window.aa
-      })
-    );
-
-    window.aa("setUserToken", "other-token");
-
-    console.log("window-", window);
-
     // Group results by distinct attribute (year) function
     function distinctResults(results, attributeForDistinct) {
       let d = {};
@@ -529,23 +586,66 @@ if (!isFAQ) {
     }
     // Create the render function
     const renderHits = (renderOptions, isFirstRender) => {
-      const { hits, widgetParams, bindEvent } = renderOptions;
+      const { hits, widgetParams, bindEvent, sendEvent } = renderOptions;
+
       if (renderOptions.results == undefined) {
         return;
       }
       const groupedByCategorie = distinctResults(hits, "categorie");
+
       widgetParams.container.innerHTML = getSearchList({
         groupedByCategorie,
-        bindEvent
+        bindEvent,
+        sendEvent
       });
+
+      const btnClick = document.getElementsByClassName("button-send-event");
+
+      if (btnClick.length > 0) {
+        for (let i = 0; i < btnClick.length; i++) {
+          btnClick[i].addEventListener("click", async () => {
+            const hit = hits[i];
+            const event = {
+              events: [
+                {
+                  eventType: "click",
+                  eventName: "Clicked Clicked",
+                  index: "test_GLOBAL_SEARCH",
+                  userToken: "user-123456",
+                  timestamp: new Date().getTime(),
+                  objectIDs: [`${hit.objectID}`],
+                  queryID: hit.__queryID,
+                  positions: [hit.__position]
+                }
+              ]
+            };
+
+            await fetch("https://insights.algolia.io/1/events", {
+              body: `${JSON.stringify(event)}`,
+              headers: {
+                "Content-Type": "application/json",
+                "X-Algolia-Api-Key": `${apiKey}`,
+                "X-Algolia-Application-Id": `${appId}`
+              },
+              method: "POST"
+            });
+
+            const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
+            window.location = SEARCH_LINK;
+          });
+        }
+      }
     };
+
     const customHits =
       instantsearch.connectors.connectHitsWithInsights(renderHits);
+
     search.addWidgets([
       instantsearch.widgets.configure({
         hitsPerPage: 5
       })
     ]);
+
     search.addWidgets([
       customHits({
         container: searchTips,
@@ -556,6 +656,7 @@ if (!isFAQ) {
         }
       })
     ]);
+
     search.addWidget(
       instantsearch.widgets.searchBox({
         container: ".sn-search",
@@ -576,7 +677,16 @@ if (!isFAQ) {
     let searchInputIcon = document.querySelectorAll(".sn-search-box .svg")[0];
     let resetIcon = document.querySelectorAll(".sn-search-box .svg")[1];
     resetIcon.classList.add("reset");
+
+    const insightsMiddleware =
+      instantsearch.middlewares.createInsightsMiddleware({
+        insightsClient: window.aa
+      });
+
+    search.use(insightsMiddleware);
+
     search.start();
+
     document.querySelector(".ais-SearchBox").prepend(searchInputIcon);
     document.querySelector(".ais-SearchBox").append(resetIcon);
     document.querySelector(".sn-search").append(searchTips);
