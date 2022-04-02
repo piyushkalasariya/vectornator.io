@@ -255,7 +255,7 @@ if (!isFAQ) {
                   const HEADING = getHeading({ hit });
                   // let link = hit.slug;
                   return `
-                    <button style="text-align:left" class="sc-card w-inline-block button-send-event">
+                    <button style="text-align:left; background: transparent;" class="sc-card w-inline-block button-send-event">
                       <h4 class="alt-h4 is-black no-margins">${HEADING}</h4>
                       <div class="text-body-2 one-line">
                         ${instantsearch.snippet({
