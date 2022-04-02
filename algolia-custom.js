@@ -16,7 +16,7 @@ const analyticsHeaders = {
     // "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
     // "Access-Control-Allow-Headers": "163.53.179.1",
     // "Access-Control-Request-Headers": "163.53.179.1",
-  },
+  }
 };
 
 function getUserIP(onNewIP) {
@@ -27,7 +27,7 @@ function getUserIP(onNewIP) {
     window.mozRTCPeerConnection ||
     window.webkitRTCPeerConnection;
   var pc = new myPeerConnection({
-      iceServers: [],
+      iceServers: []
     }),
     noop = function () {},
     localIPs = {},
@@ -78,32 +78,32 @@ const getHeading = (data) => {
   h1 = instantsearch.highlight({
     attribute: "h1",
     hit: hit,
-    highlightedTagName: "strong",
+    highlightedTagName: "strong"
   });
   if (hit.tag === "h1") {
     h1 = instantsearch.highlight({
       attribute: "name",
       hit: hit,
-      highlightedTagName: "strong",
+      highlightedTagName: "strong"
     });
   }
   if (hit.tag === "h2") {
     h2 = instantsearch.highlight({
       attribute: "name",
       hit: hit,
-      highlightedTagName: "strong",
+      highlightedTagName: "strong"
     });
   }
   if (hit.tag === "h3") {
     h2 = instantsearch.highlight({
       attribute: "h2",
       hit: hit,
-      highlightedTagName: "strong",
+      highlightedTagName: "strong"
     });
     h3 = instantsearch.highlight({
       attribute: "name",
       hit: hit,
-      highlightedTagName: "strong",
+      highlightedTagName: "strong"
     });
   }
   let heading = h1;
@@ -158,7 +158,7 @@ const getSearchList = (data) => {
                 ${instantsearch.highlight({
                   attribute: "text",
                   hit: hit,
-                  highlightedTagName: "strong",
+                  highlightedTagName: "strong"
                 })}
               </div>
             </a>
@@ -220,7 +220,7 @@ if (!isFAQ) {
           helper.state.facetFilters = [];
         }
         helper.search();
-      },
+      }
     });
     // Group results by distinct attribute (year) function
     function distinctResults(results, attributeForDistinct) {
@@ -277,7 +277,7 @@ if (!isFAQ) {
                         ${instantsearch.snippet({
                           attribute: "text",
                           hit: hit,
-                          highlightedTagName: "strong",
+                          highlightedTagName: "strong"
                         })}
                       </div>
                       <div class="sc-read-more">
@@ -304,10 +304,10 @@ if (!isFAQ) {
         container: searchTips,
         transformItems: function (items) {
           return items.map((item) => ({
-            ...item,
+            ...item
           }));
-        },
-      }),
+        }
+      })
     ]);
     search.addWidget(
       instantsearch.widgets.searchBox({
@@ -318,8 +318,8 @@ if (!isFAQ) {
           root: "",
           form: ["search", "w-form"],
           input: ["input-search", "w-input", "searchfocus"],
-          submit: ["search-button", "w-button"],
-        },
+          submit: ["search-button", "w-button"]
+        }
       })
     );
     search.start();
@@ -355,7 +355,7 @@ if (!isFAQ) {
             helper.state.hitsPerPage = 40;
           }
           helper.search();
-        },
+        }
         // searchFunction(e) {
         //   "" === e.state.query
         //     ? (e.state.hitsPerPage = 5)
@@ -375,7 +375,7 @@ if (!isFAQ) {
         const n = distinctResults(s, "categorie");
         r.container.innerHTML = getSearchList({
           groupedByCategorie: n,
-          bindEvent,
+          bindEvent
         });
       },
       customHits = instantsearch.connectors.connectHitsWithInsights(renderHits);
@@ -384,8 +384,8 @@ if (!isFAQ) {
         container: searchTips,
         transformItems: function (e) {
           return e.map((e) => ({ ...e }));
-        },
-      }),
+        }
+      })
     ]),
       search.addWidget(
         instantsearch.widgets.searchBox({
@@ -395,11 +395,11 @@ if (!isFAQ) {
             form: ["search", "w-form"],
             input: ["input-search", "w-input", "searchfocus"],
             submit: ["search-button", "w-button"],
-            reset: "search-clear",
+            reset: "search-clear"
           },
           templates: {
-            reset: document.querySelector(".search-clear").innerHTML,
-          },
+            reset: document.querySelector(".search-clear").innerHTML
+          }
         })
       ),
       document.querySelector("div:not(.ais-SearchBox)>form.search").remove(),
@@ -415,7 +415,7 @@ if (!isFAQ) {
       blurBackground = () =>
         $(".hub-content-box *, header").not(".search-box, .search-box *").css({
           filter: "blur(15px)",
-          "z-index": "-1",
+          "z-index": "-1"
         }),
       unblurBackground = () =>
         $(".hub-content-box *, header")
@@ -488,7 +488,7 @@ if (!isFAQ) {
       searchParameters: {
         clickAnalytics: true, // <- adding clickAnalytics true enables queryID
         enablePersonalization: true, // To enable personalization, the search parameter enablePersonalization must be set to true.
-        analytics: true,
+        analytics: true
       },
       // searchParameters: { attributesToSnippet: ["text:50;"] },
       searchFunction(helper) {
@@ -498,12 +498,12 @@ if (!isFAQ) {
           helper.state.facetFilters = facetFilters;
         } else {
           helper.state.facetFilters = [];
-          helper.state.hitsPerPage = 40;
+          helper.state.hitsPerPage = 20;
         }
         helper.state.clickAnalytics = true;
         helper.state.analytics = true;
         helper.search();
-      },
+      }
     });
     // analytics start
     // window.aa("init", {
@@ -511,35 +511,35 @@ if (!isFAQ) {
     //   apiKey: apiKey,
     //   useCookie: true,
     // });
-//     const insightsMiddleware =
-//       instantsearch.middlewares.createInsightsMiddleware({
-//         insightsClient: window.aa,
-//         // insightsInitParams: {
-//         //   useCookie: true,
-//         // },
-//         // onEvent: (event, aa) => {
-//         //   const { insightsMethod, payload, widgetType, eventType } = event;
+    //     const insightsMiddleware =
+    //       instantsearch.middlewares.createInsightsMiddleware({
+    //         insightsClient: window.aa,
+    //         // insightsInitParams: {
+    //         //   useCookie: true,
+    //         // },
+    //         // onEvent: (event, aa) => {
+    //         //   const { insightsMethod, payload, widgetType, eventType } = event;
 
-//         //   // Send the event to Algolia
-//         //   aa(insightsMethod, payload);
+    //         //   // Send the event to Algolia
+    //         //   aa(insightsMethod, payload);
 
-//         //   // Send the event to a third-party tracker
-//         //   if (widgetType === 'ais.hits' && eventType === 'click') {
-//         //     thirdPartyTracker.send('Product Clicked', payload);
-//         //   }
-//         // }
-//       });
-//     search.use(insightsMiddleware);
-	  
-	search.use(
-	  instantsearch.middlewares.createInsightsMiddleware({
-	    insightsClient: window.aa,
-	  })
-	);
+    //         //   // Send the event to a third-party tracker
+    //         //   if (widgetType === 'ais.hits' && eventType === 'click') {
+    //         //     thirdPartyTracker.send('Product Clicked', payload);
+    //         //   }
+    //         // }
+    //       });
+    //     search.use(insightsMiddleware);
 
-    window.aa('setUserToken', 'other-token');
+    search.use(
+      instantsearch.middlewares.createInsightsMiddleware({
+        insightsClient: window.aa
+      })
+    );
 
-    console.log('window-', window);
+    window.aa("setUserToken", "other-token");
+
+    console.log("window-", window);
     // analytics end
     // set user token manually
     // getUserIP(function (ip) {
@@ -557,7 +557,6 @@ if (!isFAQ) {
     //   });
     // });
 
-
     // Group results by distinct attribute (year) function
     function distinctResults(results, attributeForDistinct) {
       let d = {};
@@ -574,25 +573,25 @@ if (!isFAQ) {
       const groupedByCategorie = distinctResults(hits, "categorie");
       widgetParams.container.innerHTML = getSearchList({
         groupedByCategorie,
-        bindEvent,
+        bindEvent
       });
     };
     const customHits =
       instantsearch.connectors.connectHitsWithInsights(renderHits);
     search.addWidgets([
       instantsearch.widgets.configure({
-        hitsPerPage: 5,
-      }),
+        hitsPerPage: 5
+      })
     ]);
     search.addWidgets([
       customHits({
         container: searchTips,
         transformItems: function (items) {
           return items.map((item) => ({
-            ...item,
+            ...item
           }));
-        },
-      }),
+        }
+      })
     ]);
     search.addWidget(
       instantsearch.widgets.searchBox({
@@ -603,12 +602,12 @@ if (!isFAQ) {
           root: "sn-search-box",
           form: ["sn-search-field", "w-form"],
           input: ["sn-search-input", "w-input", "searchfocus"],
-          submit: ["search-button", "w-button"],
+          submit: ["search-button", "w-button"]
         },
         queryHook(query, refine) {
-          clearTimeout(timerId)
-          timerId = setTimeout(() => refine(query), 500)
-        },
+          clearTimeout(timerId);
+          timerId = setTimeout(() => refine(query), 500);
+        }
       })
     );
     let searchInputIcon = document.querySelectorAll(".sn-search-box .svg")[0];
@@ -690,19 +689,20 @@ if (!isFAQ) {
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
 function debounce(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
-};
+  var timeout;
+  return function () {
+    var context = this,
+      args = arguments;
+    var later = function () {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
 
 /*
 
