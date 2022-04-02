@@ -41,56 +41,6 @@ aa("getUserToken", null, (err, newUserToken) => {
   userToken = newUserToken;
 });
 
-function getUserIP(onNewIP) {
-  //  onNewIp - your listener function for new IPs
-  //compatibility for firefox and chrome
-  var myPeerConnection =
-    window.RTCPeerConnection ||
-    window.mozRTCPeerConnection ||
-    window.webkitRTCPeerConnection;
-  var pc = new myPeerConnection({
-      iceServers: [],
-    }),
-    noop = function () {},
-    localIPs = {},
-    ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
-    key;
-
-  function iterateIP(ip) {
-    if (!localIPs[ip]) onNewIP(ip);
-    localIPs[ip] = true;
-  }
-
-  //create a bogus data channel
-  pc.createDataChannel("");
-
-  // create offer and set local description
-  pc.createOffer()
-    .then(function (sdp) {
-      sdp.sdp.split("\n").forEach(function (line) {
-        if (line.indexOf("candidate") < 0) return;
-        line.match(ipRegex).forEach(iterateIP);
-      });
-
-      pc.setLocalDescription(sdp, noop, noop);
-    })
-    .catch(function (reason) {
-      // An error occurred, so handle the failure to connect
-    });
-
-  //listen for candidate events
-  pc.onicecandidate = function (ice) {
-    if (
-      !ice ||
-      !ice.candidate ||
-      !ice.candidate.candidate ||
-      !ice.candidate.candidate.match(ipRegex)
-    )
-      return;
-    ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
-  };
-}
-
 const getHeading = (data) => {
   const { hit } = data;
   let h1 = "";
@@ -305,11 +255,7 @@ if (!isFAQ) {
                   const HEADING = getHeading({ hit });
                   // let link = hit.slug;
                   return `
-                    <a href="${SEARCH_LINK}" ${bindEvent(
-                    "click",
-                    hits[0],
-                    "Search Result Clicked"
-                  )} class="sc-card w-inline-block">
+                    <button style="text-align:left" class="sc-card w-inline-block button-send-event">
                       <h4 class="alt-h4 is-black no-margins">${HEADING}</h4>
                       <div class="text-body-2 one-line">
                         ${instantsearch.snippet({
@@ -324,8 +270,31 @@ if (!isFAQ) {
                         </div>
                       <div class="text-body-2">Read More</div>
                       </div>
-                    </a>
+                    </button>
                   `;
+                  // BEFORE ANALYTICS
+                  // return `
+                  //   <a href="${SEARCH_LINK}" ${bindEvent(
+                  //   "click",
+                  //   hits[0],
+                  //   "Search Result Clicked"
+                  // )} class="sc-card w-inline-block">
+                  //     <h4 class="alt-h4 is-black no-margins">${HEADING}</h4>
+                  //     <div class="text-body-2 one-line">
+                  //       ${instantsearch.snippet({
+                  //         attribute: "text",
+                  //         hit: hit,
+                  //         highlightedTagName: "strong",
+                  //       })}
+                  //     </div>
+                  //     <div class="sc-read-more">
+                  //       <div class="svg in-help-link w-embed">
+                  //         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><g clip-path="url(#clip0)"><path d="M16 8C16 3.6 12.4 0 8 0 3.6 0 0 3.6 0 8 0 12.4 3.6 16 8 16 12.4 16 16 12.4 16 8ZM3.9 8C3.9 7.6 4.1 7.3 4.5 7.3L8.4 7.3 10.1 7.4 9.2 6.6 8.2 5.7C8.1 5.6 8 5.4 8 5.2 8 4.9 8.3 4.6 8.7 4.6 8.8 4.6 9 4.7 9.1 4.8L11.8 7.5C12 7.6 12.1 7.8 12.1 8 12.1 8.2 12 8.3 11.8 8.5L9.1 11.2C9 11.3 8.8 11.4 8.7 11.4 8.3 11.4 8 11.1 8 10.8 8 10.6 8.1 10.4 8.2 10.3L9.2 9.4 10.1 8.6 8.4 8.7 4.5 8.7C4.1 8.7 3.9 8.4 3.9 8Z" fill="currentColor"></path></g><defs><clipPath><rect width="16" height="16" transform="translate(0 16)rotate(-90)" fill="white"></rect></clipPath></defs></svg>
+                  //       </div>
+                  //     <div class="text-body-2">Read More</div>
+                  //     </div>
+                  //   </a>
+                  // `;
                 })
                 .join("")}
             </div>
@@ -334,7 +303,45 @@ if (!isFAQ) {
           .join("")}`
           : `${noResults.outerHTML}`
       }`;
+
+      const btnClick = document.getElementsByClassName("button-send-event");
+
+      if (btnClick.length > 0) {
+        for (let i = 0; i < btnClick.length; i++) {
+          btnClick[i].addEventListener("click", async () => {
+            const hit = hits[i];
+            const event = {
+              events: [
+                {
+                  eventType: "click",
+                  eventName: "Search Result Clicked",
+                  index: "test_GLOBAL_SEARCH",
+                  userToken: userToken,
+                  timestamp: new Date().getTime(),
+                  objectIDs: [`${hit.objectID}`],
+                  queryID: hit.__queryID,
+                  positions: [hit.__position],
+                },
+              ],
+            };
+
+            await fetch("https://insights.algolia.io/1/events", {
+              body: `${JSON.stringify(event)}`,
+              headers: {
+                "Content-Type": "application/json",
+                "X-Algolia-Api-Key": `${apiKey}`,
+                "X-Algolia-Application-Id": `${appId}`,
+              },
+              method: "POST",
+            });
+
+            const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
+            window.location = SEARCH_LINK;
+          });
+        }
+      }
     };
+
     const customHits =
       instantsearch.connectors.connectHitsWithInsights(renderHits);
 
@@ -439,7 +446,7 @@ if (!isFAQ) {
                 events: [
                   {
                     eventType: "click",
-                    eventName: "Clicked Clicked",
+                    eventName: "Search Result Clicked",
                     index: "test_GLOBAL_SEARCH",
                     userToken: userToken,
                     timestamp: new Date().getTime(),
