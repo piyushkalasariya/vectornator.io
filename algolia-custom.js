@@ -230,7 +230,9 @@ if (!isFAQ) {
           ? `
         ${groupedByCategorie
           .map((item) => {
-            const newHits = item.hits.slice(0, 5);
+            // Search page will not have 5 result per category limitation
+            // const newHits = item.hits.slice(0, 5);
+            const newHits = item.hits;
             const matchCount = [];
             const sortHits = [];
             newHits.map((hit, index) => {
