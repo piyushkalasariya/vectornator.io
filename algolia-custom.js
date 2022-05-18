@@ -598,8 +598,8 @@ if (!isFAQ) {
           helper.state.facets = ["categorie"];
           helper.state.hitsPerPage = 40;
           // helper.state.attributesForFaceting = ["searchable(categorie)"];
-          helper.state.maxValuesPerFacet = 5;
-          helper.state.maxFacetHits = 5;
+          helper.state.maxFacetHits = 10;
+          helper.state.maxValuesPerFacet = 10;
         }
         helper.state.clickAnalytics = true;
         helper.state.analytics = true;
