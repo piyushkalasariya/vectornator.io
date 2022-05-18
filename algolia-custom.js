@@ -596,6 +596,7 @@ if (!isFAQ) {
         } else {
           helper.state.facetFilters = [];
           helper.state.hitsPerPage = 40;
+          helper.state.maxValuesPerFacet = 5;
         }
         helper.state.clickAnalytics = true;
         helper.state.analytics = true;
