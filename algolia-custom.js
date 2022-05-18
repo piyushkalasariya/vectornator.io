@@ -594,7 +594,8 @@ if (!isFAQ) {
           const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
           helper.state.facetFilters = facetFilters;
         } else {
-          helper.state.facetFilters = [];
+          // helper.state.facetFilters = ["categorie"];
+          helper.state.facets = ["categorie"];
           helper.state.hitsPerPage = 40;
           // helper.state.attributesForFaceting = ["searchable(categorie)"];
           helper.state.maxValuesPerFacet = 5;
