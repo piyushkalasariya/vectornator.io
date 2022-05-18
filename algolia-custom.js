@@ -595,7 +595,7 @@ if (!isFAQ) {
           helper.state.facetFilters = facetFilters;
         } else {
           helper.state.facetFilters = [];
-          helper.state.hitsPerPage = 20;
+          helper.state.hitsPerPage = 40;
         }
         helper.state.clickAnalytics = true;
         helper.state.analytics = true;
