@@ -195,7 +195,7 @@ if (!isFAQ) {
               }
             }
           }
-          helper.state.hitsPerPage = 5;
+          helper.state.hitsPerPage = 40;
           const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
           helper.state.facetFilters = facetFilters;
         } else {
