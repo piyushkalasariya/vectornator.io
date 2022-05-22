@@ -248,7 +248,9 @@ if (!isFAQ) {
 
             return `
           <div class="sc-group">
-            <h3 class="text-body-1 is-black-50-text">${item.categorie}</h3>
+            <h3 class="text-body-1 text-body-1---left is-black-50-text">${
+              item.categorie
+            }</h3>
             <div class="sc-list">
               ${sortHits
                 .map((hit) => {
