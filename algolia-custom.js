@@ -16,19 +16,8 @@ const analyticsHeaders = {
     // "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
     // "Access-Control-Allow-Headers": "163.53.179.1",
     // "Access-Control-Request-Headers": "163.53.179.1",
-  },
+  }
 };
-
-/* Add "https://api.ipify.org?format=json" statement
-  this will communicate with the ipify servers in
-  order to retrieve the IP address $.getJSON will
-  load JSON-encoded data from the server using a
-  GET HTTP request */
-
-// Setting text of element P with id gfg
-// $.getJSON("https://api.ipify.org?format=json", function (data) {
-//   console.log("user-data-ip-", { data, ip: data.ip });
-// });
 
 let userToken;
 
@@ -37,9 +26,58 @@ aa("getUserToken", null, (err, newUserToken) => {
     console.error(err);
     return;
   }
-  console.log("userToken-", newUserToken);
   userToken = newUserToken;
 });
+
+function getUserIP(onNewIP) {
+  //  onNewIp - your listener function for new IPs
+  //compatibility for firefox and chrome
+  var myPeerConnection =
+    window.RTCPeerConnection ||
+    window.mozRTCPeerConnection ||
+    window.webkitRTCPeerConnection;
+  var pc = new myPeerConnection({
+      iceServers: []
+    }),
+    noop = function () {},
+    localIPs = {},
+    ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
+    key;
+
+  function iterateIP(ip) {
+    if (!localIPs[ip]) onNewIP(ip);
+    localIPs[ip] = true;
+  }
+
+  //create a bogus data channel
+  pc.createDataChannel("");
+
+  // create offer and set local description
+  pc.createOffer()
+    .then(function (sdp) {
+      sdp.sdp.split("\n").forEach(function (line) {
+        if (line.indexOf("candidate") < 0) return;
+        line.match(ipRegex).forEach(iterateIP);
+      });
+
+      pc.setLocalDescription(sdp, noop, noop);
+    })
+    .catch(function (reason) {
+      // An error occurred, so handle the failure to connect
+    });
+
+  //listen for candidate events
+  pc.onicecandidate = function (ice) {
+    if (
+      !ice ||
+      !ice.candidate ||
+      !ice.candidate.candidate ||
+      !ice.candidate.candidate.match(ipRegex)
+    )
+      return;
+    ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
+  };
+}
 
 const getHeading = (data) => {
   const { hit } = data;
@@ -50,32 +88,32 @@ const getHeading = (data) => {
   h1 = instantsearch.highlight({
     attribute: "h1",
     hit: hit,
-    highlightedTagName: "strong",
+    highlightedTagName: "strong"
   });
   if (hit.tag === "h1") {
     h1 = instantsearch.highlight({
       attribute: "name",
       hit: hit,
-      highlightedTagName: "strong",
+      highlightedTagName: "strong"
     });
   }
   if (hit.tag === "h2") {
     h2 = instantsearch.highlight({
       attribute: "name",
       hit: hit,
-      highlightedTagName: "strong",
+      highlightedTagName: "strong"
     });
   }
   if (hit.tag === "h3") {
     h2 = instantsearch.highlight({
       attribute: "h2",
       hit: hit,
-      highlightedTagName: "strong",
+      highlightedTagName: "strong"
     });
     h3 = instantsearch.highlight({
       attribute: "name",
       hit: hit,
-      highlightedTagName: "strong",
+      highlightedTagName: "strong"
     });
   }
   let heading = h1;
@@ -134,7 +172,7 @@ const getSearchList = (data) => {
                 ${instantsearch.highlight({
                   attribute: "text",
                   hit: hit,
-                  highlightedTagName: "strong",
+                  highlightedTagName: "strong"
                 })}
               </div>
             </button>
@@ -171,6 +209,9 @@ if (!isFAQ) {
     //   indexName: "test_GLOBAL_SEARCH",
     //   attributesToSnippet: ["text:100"],
     // });
+
+    console.log(query);
+
     const search = instantsearch({
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
@@ -178,7 +219,7 @@ if (!isFAQ) {
       searchParameters: {
         clickAnalytics: true, // <- adding clickAnalytics true enables queryID
         enablePersonalization: true, // To enable personalization, the search parameter enablePersonalization must be set to true.
-        analytics: true,
+        analytics: true
       },
       // searchParameters: { attributesToSnippet: ["text:100;"] },
       searchFunction(helper) {
@@ -195,7 +236,7 @@ if (!isFAQ) {
               }
             }
           }
-          helper.state.hitsPerPage = 40;
+          helper.state.hitsPerPage = 5;
           const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
           helper.state.facetFilters = facetFilters;
         } else {
@@ -203,7 +244,7 @@ if (!isFAQ) {
           helper.state.facetFilters = [];
         }
         helper.search();
-      },
+      }
     });
     // Group results by distinct attribute (year) function
     function distinctResults(results, attributeForDistinct) {
@@ -230,9 +271,7 @@ if (!isFAQ) {
           ? `
         ${groupedByCategorie
           .map((item) => {
-            // Search page will not have 5 result per category limitation
-            // const newHits = item.hits.slice(0, 5);
-            const newHits = item.hits;
+            const newHits = item.hits.slice(0, 5);
             const matchCount = [];
             const sortHits = [];
             newHits.map((hit, index) => {
@@ -248,9 +287,7 @@ if (!isFAQ) {
 
             return `
           <div class="sc-group">
-            <h3 class="text-body-1 text-body-1---left is-black-50-text">${
-              item.categorie
-            }</h3>
+            <h3 class="text-body-1 is-black-50-text">${item.categorie}</h3>
             <div class="sc-list">
               ${sortHits
                 .map((hit) => {
@@ -259,13 +296,17 @@ if (!isFAQ) {
                   const HEADING = getHeading({ hit });
                   // let link = hit.slug;
                   return `
-                    <button style="text-align:left; background: transparent;" class="sc-card w-inline-block button-send-event">
+                    <a href="${SEARCH_LINK}" ${bindEvent(
+                    "click",
+                    hits[0],
+                    "Search Result Clicked"
+                  )} class="sc-card w-inline-block">
                       <h4 class="alt-h4 is-black no-margins">${HEADING}</h4>
                       <div class="text-body-2 one-line">
                         ${instantsearch.snippet({
                           attribute: "text",
                           hit: hit,
-                          highlightedTagName: "strong",
+                          highlightedTagName: "strong"
                         })}
                       </div>
                       <div class="sc-read-more">
@@ -274,31 +315,8 @@ if (!isFAQ) {
                         </div>
                       <div class="text-body-2">Read More</div>
                       </div>
-                    </button>
+                    </a>
                   `;
-                  // BEFORE ANALYTICS
-                  // return `
-                  //   <a href="${SEARCH_LINK}" ${bindEvent(
-                  //   "click",
-                  //   hits[0],
-                  //   "Search Result Clicked"
-                  // )} class="sc-card w-inline-block">
-                  //     <h4 class="alt-h4 is-black no-margins">${HEADING}</h4>
-                  //     <div class="text-body-2 one-line">
-                  //       ${instantsearch.snippet({
-                  //         attribute: "text",
-                  //         hit: hit,
-                  //         highlightedTagName: "strong",
-                  //       })}
-                  //     </div>
-                  //     <div class="sc-read-more">
-                  //       <div class="svg in-help-link w-embed">
-                  //         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><g clip-path="url(#clip0)"><path d="M16 8C16 3.6 12.4 0 8 0 3.6 0 0 3.6 0 8 0 12.4 3.6 16 8 16 12.4 16 16 12.4 16 8ZM3.9 8C3.9 7.6 4.1 7.3 4.5 7.3L8.4 7.3 10.1 7.4 9.2 6.6 8.2 5.7C8.1 5.6 8 5.4 8 5.2 8 4.9 8.3 4.6 8.7 4.6 8.8 4.6 9 4.7 9.1 4.8L11.8 7.5C12 7.6 12.1 7.8 12.1 8 12.1 8.2 12 8.3 11.8 8.5L9.1 11.2C9 11.3 8.8 11.4 8.7 11.4 8.3 11.4 8 11.1 8 10.8 8 10.6 8.1 10.4 8.2 10.3L9.2 9.4 10.1 8.6 8.4 8.7 4.5 8.7C4.1 8.7 3.9 8.4 3.9 8Z" fill="currentColor"></path></g><defs><clipPath><rect width="16" height="16" transform="translate(0 16)rotate(-90)" fill="white"></rect></clipPath></defs></svg>
-                  //       </div>
-                  //     <div class="text-body-2">Read More</div>
-                  //     </div>
-                  //   </a>
-                  // `;
                 })
                 .join("")}
             </div>
@@ -307,45 +325,7 @@ if (!isFAQ) {
           .join("")}`
           : `${noResults.outerHTML}`
       }`;
-
-      const btnClick = document.getElementsByClassName("button-send-event");
-
-      if (btnClick.length > 0) {
-        for (let i = 0; i < btnClick.length; i++) {
-          btnClick[i].addEventListener("click", async () => {
-            const hit = hits[i];
-            const event = {
-              events: [
-                {
-                  eventType: "click",
-                  eventName: "Search Result Clicked",
-                  index: "test_GLOBAL_SEARCH",
-                  userToken: userToken,
-                  timestamp: new Date().getTime(),
-                  objectIDs: [`${hit.objectID}`],
-                  queryID: hit.__queryID,
-                  positions: [hit.__position],
-                },
-              ],
-            };
-
-            await fetch("https://insights.algolia.io/1/events", {
-              body: `${JSON.stringify(event)}`,
-              headers: {
-                "Content-Type": "application/json",
-                "X-Algolia-Api-Key": `${apiKey}`,
-                "X-Algolia-Application-Id": `${appId}`,
-              },
-              method: "POST",
-            });
-
-            const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
-            window.location = SEARCH_LINK;
-          });
-        }
-      }
     };
-
     const customHits =
       instantsearch.connectors.connectHitsWithInsights(renderHits);
 
@@ -354,10 +334,10 @@ if (!isFAQ) {
         container: searchTips,
         transformItems: function (items) {
           return items.map((item) => ({
-            ...item,
+            ...item
           }));
-        },
-      }),
+        }
+      })
     ]);
 
     search.addWidget(
@@ -369,14 +349,14 @@ if (!isFAQ) {
           root: "",
           form: ["search", "w-form"],
           input: ["input-search", "w-input", "searchfocus"],
-          submit: ["search-button", "w-button"],
-        },
+          submit: ["search-button", "w-button"]
+        }
       })
     );
 
     const insightsMiddleware =
       instantsearch.middlewares.createInsightsMiddleware({
-        insightsClient: window.aa,
+        insightsClient: window.aa
       });
 
     search.use(insightsMiddleware);
@@ -415,7 +395,7 @@ if (!isFAQ) {
             helper.state.hitsPerPage = 40;
           }
           helper.search();
-        },
+        }
         // searchFunction(e) {
         //   "" === e.state.query
         //     ? (e.state.hitsPerPage = 5)
@@ -437,7 +417,7 @@ if (!isFAQ) {
         r.container.innerHTML = getSearchList({
           groupedByCategorie: n,
           bindEvent,
-          sendEvent,
+          sendEvent
         });
 
         const btnClick = document.getElementsByClassName("button-send-event");
@@ -450,15 +430,15 @@ if (!isFAQ) {
                 events: [
                   {
                     eventType: "click",
-                    eventName: "Search Result Clicked",
+                    eventName: "Clicked Clicked",
                     index: "test_GLOBAL_SEARCH",
                     userToken: userToken,
                     timestamp: new Date().getTime(),
                     objectIDs: [`${hit.objectID}`],
                     queryID: hit.__queryID,
-                    positions: [hit.__position],
-                  },
-                ],
+                    positions: [hit.__position]
+                  }
+                ]
               };
 
               await fetch("https://insights.algolia.io/1/events", {
@@ -466,9 +446,9 @@ if (!isFAQ) {
                 headers: {
                   "Content-Type": "application/json",
                   "X-Algolia-Api-Key": `${apiKey}`,
-                  "X-Algolia-Application-Id": `${appId}`,
+                  "X-Algolia-Application-Id": `${appId}`
                 },
-                method: "POST",
+                method: "POST"
               });
 
               const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
@@ -483,8 +463,8 @@ if (!isFAQ) {
         container: searchTips,
         transformItems: function (e) {
           return e.map((e) => ({ ...e }));
-        },
-      }),
+        }
+      })
     ]),
       search.addWidget(
         instantsearch.widgets.searchBox({
@@ -494,11 +474,11 @@ if (!isFAQ) {
             form: ["search", "w-form"],
             input: ["input-search", "w-input", "searchfocus"],
             submit: ["search-button", "w-button"],
-            reset: "search-clear",
+            reset: "search-clear"
           },
           templates: {
-            reset: document.querySelector(".search-clear").innerHTML,
-          },
+            reset: document.querySelector(".search-clear").innerHTML
+          }
         })
       ),
       document.querySelector("div:not(.ais-SearchBox)>form.search").remove(),
@@ -514,7 +494,7 @@ if (!isFAQ) {
       blurBackground = () =>
         $(".hub-content-box *, header").not(".search-box, .search-box *").css({
           filter: "blur(15px)",
-          "z-index": "-1",
+          "z-index": "-1"
         }),
       unblurBackground = () =>
         $(".hub-content-box *, header")
@@ -570,8 +550,13 @@ if (!isFAQ) {
           // var inputVal = $(this).val();
           // const keyword = $("#search").val();
           const keyword = $(".input-search").val();
-          // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
-          if (keyword) window.open(`/searching?query=${keyword}`, "_self");
+          if (keyword)
+            window.open(
+              `/searching?test_GLOBAL_SEARCH%5Bquery%5D=${decodeURIComponent(
+                keyword
+              )}`,
+              "_self"
+            );
         }
       });
   } else {
@@ -587,7 +572,7 @@ if (!isFAQ) {
       searchParameters: {
         clickAnalytics: true, // <- adding clickAnalytics true enables queryID
         enablePersonalization: true, // To enable personalization, the search parameter enablePersonalization must be set to true.
-        analytics: true,
+        analytics: true
       },
       // searchParameters: { attributesToSnippet: ["text:50;"] },
       searchFunction(helper) {
@@ -596,17 +581,13 @@ if (!isFAQ) {
           const facetFilters = [["tag:h1"], ["categorie:-Dictionary"]];
           helper.state.facetFilters = facetFilters;
         } else {
-          // helper.state.facetFilters = ["categorie"];
-          helper.state.facets = ["categorie"];
-          helper.state.hitsPerPage = 40;
-          // helper.state.attributesForFaceting = ["searchable(categorie)"];
-          helper.state.maxFacetHits = 10;
-          // helper.state.maxValuesPerFacet = 10;
+          helper.state.facetFilters = [];
+          helper.state.hitsPerPage = 20;
         }
         helper.state.clickAnalytics = true;
         helper.state.analytics = true;
         helper.search();
-      },
+      }
     });
     // analytics start
 
@@ -629,7 +610,7 @@ if (!isFAQ) {
       widgetParams.container.innerHTML = getSearchList({
         groupedByCategorie,
         bindEvent,
-        sendEvent,
+        sendEvent
       });
 
       const btnClick = document.getElementsByClassName("button-send-event");
@@ -648,9 +629,9 @@ if (!isFAQ) {
                   timestamp: new Date().getTime(),
                   objectIDs: [`${hit.objectID}`],
                   queryID: hit.__queryID,
-                  positions: [hit.__position],
-                },
-              ],
+                  positions: [hit.__position]
+                }
+              ]
             };
 
             await fetch("https://insights.algolia.io/1/events", {
@@ -658,9 +639,9 @@ if (!isFAQ) {
               headers: {
                 "Content-Type": "application/json",
                 "X-Algolia-Api-Key": `${apiKey}`,
-                "X-Algolia-Application-Id": `${appId}`,
+                "X-Algolia-Application-Id": `${appId}`
               },
-              method: "POST",
+              method: "POST"
             });
 
             const SEARCH_LINK = `${window.location.origin}/${hit.objectID}`;
@@ -675,8 +656,8 @@ if (!isFAQ) {
 
     search.addWidgets([
       instantsearch.widgets.configure({
-        hitsPerPage: 5,
-      }),
+        hitsPerPage: 5
+      })
     ]);
 
     search.addWidgets([
@@ -684,10 +665,10 @@ if (!isFAQ) {
         container: searchTips,
         transformItems: function (items) {
           return items.map((item) => ({
-            ...item,
+            ...item
           }));
-        },
-      }),
+        }
+      })
     ]);
 
     search.addWidget(
@@ -699,12 +680,12 @@ if (!isFAQ) {
           root: "sn-search-box",
           form: ["sn-search-field", "w-form"],
           input: ["sn-search-input", "w-input", "searchfocus"],
-          submit: ["search-button", "w-button"],
+          submit: ["search-button", "w-button"]
         },
         queryHook(query, refine) {
           clearTimeout(timerId);
           timerId = setTimeout(() => refine(query), 500);
-        },
+        }
       })
     );
     let searchInputIcon = document.querySelectorAll(".sn-search-box .svg")[0];
@@ -713,7 +694,7 @@ if (!isFAQ) {
 
     const insightsMiddleware =
       instantsearch.middlewares.createInsightsMiddleware({
-        insightsClient: window.aa,
+        insightsClient: window.aa
       });
 
     search.use(insightsMiddleware);
@@ -782,9 +763,15 @@ if (!isFAQ) {
         if (e.which == 13) {
           // var inputVal = $(this).val();
           const keyword = $("#search").val();
-          // console.log("keypress-input-keyword-", keyword);
-          // if (keyword) window.open(`/searching.html?query=${keyword}`, "_self");
-          if (keyword) window.open(`/searching?query=${keyword}`, "_self");
+
+          if (keyword)
+            window.open(
+              `/searching?test_GLOBAL_SEARCH%5Bquery%5D=${decodeURIComponent(
+                keyword
+              )}`,
+              "_self"
+            );
+          // if (keyword) window.open(`/searching?query=${keyword}`, "_self");
         }
       });
   }
