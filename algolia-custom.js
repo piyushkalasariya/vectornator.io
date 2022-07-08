@@ -166,7 +166,9 @@ const getSearchList = (data) => {
           // )}></a>
 
           const record = `
-            <button style="text-align:left" class="button-send-event button-analytics st-link ${colorClass} w-inline-block">
+            <button style="text-align:left" data-link="${SEARCH_LINK}" data-id="${
+            hit.objectID
+          }" class="button-send-event button-analytics st-link ${colorClass} w-inline-block">
               <div class="st-name">${HEADING}</div>
               <div class="st-text one-line">
                 ${instantsearch.highlight({
@@ -209,9 +211,6 @@ if (!isFAQ) {
     //   indexName: "test_GLOBAL_SEARCH",
     //   attributesToSnippet: ["text:100"],
     // });
-
-    console.log(query);
-
     const search = instantsearch({
       indexName: "test_GLOBAL_SEARCH",
       searchClient,
@@ -261,7 +260,9 @@ if (!isFAQ) {
       if (renderOptions.results == undefined) {
         return;
       }
+
       const groupedByCategorie = distinctResults(hits, "categorie");
+
       widgetParams.container.innerHTML = `
         <div class="sc-title-box">
           <h2 class="alt-h3 is-black">${hits.length} results for “${query}”</h2>
@@ -425,7 +426,10 @@ if (!isFAQ) {
         if (btnClick.length > 0) {
           for (let i = 0; i < btnClick.length; i++) {
             btnClick[i].addEventListener("click", async () => {
-              const hit = hits[i];
+              const hit = hits.filter(
+                (item) => item.objectID === btnClick[i].dataset.id
+              )[0];
+
               const event = {
                 events: [
                   {
@@ -618,7 +622,10 @@ if (!isFAQ) {
       if (btnClick.length > 0) {
         for (let i = 0; i < btnClick.length; i++) {
           btnClick[i].addEventListener("click", async () => {
-            const hit = hits[i];
+            const hit = hits.filter(
+              (item) => item.objectID === btnClick[i].dataset.id
+            )[0];
+
             const event = {
               events: [
                 {
